@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+"""把 glyphs.collect() 里的轮廓装配成小样字体 sample/Duyan-Sample.otf（CFF，直接存三次曲线）。
+
+装配前先跑一遍 tools/check.py：有问题就列出来；加 --strict 时有问题就不出字体。
+"""
+import argparse
+import os
+import sys
+
+from fontTools.fontBuilder import FontBuilder
+from fontTools.pens.boundsPen import BoundsPen
+from fontTools.pens.t2CharStringPen import T2CharStringPen
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, "tools"))
+import glyphs  # noqa: E402
+from check import check  # noqa: E402
+
+UPM = 1000
+
+
+def glyph_name(ch):
+    return {".": "period", "，": "uni_comma_cjk", "。": "uni_period_cjk", " ": "space"}.get(
+        ch, ch if ch.isascii() and ch.isalnum() else "uni%04X" % ord(ch))
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--strict", action="store_true")
+    a = ap.parse_args()
+    table = glyphs.collect()
+    problems = 0
+    for ch, (shapes, adv) in table.items():
+        for kind, x, y, msg in check(shapes):
+            problems += 1
+            print(f"{ch} {kind} ({x:.0f},{y:.0f}) {msg}")
+    if problems and a.strict:
+        sys.exit(f"有 {problems} 处问题，没有生成字体")
+
+    order = [".notdef", "space"] + [glyph_name(ch) for ch in table]
+    fb = FontBuilder(UPM, isTTF=False)
+    fb.setupGlyphOrder(order)
+    cmap = {32: "space"}
+    cmap.update({ord(ch): glyph_name(ch) for ch in table})
+    fb.setupCharacterMap(cmap)
+    charstrings, metrics = {}, {}
+    pen = T2CharStringPen(500, None)
+    pen.moveTo((60, 0)); pen.lineTo((60, 700)); pen.lineTo((440, 700)); pen.lineTo((440, 0)); pen.closePath()
+    charstrings[".notdef"] = pen.getCharString()
+    metrics[".notdef"] = (500, 60)
+    charstrings["space"] = T2CharStringPen(230, None).getCharString()
+    metrics["space"] = (230, 0)
+    for ch, (shapes, adv) in table.items():
+        name = glyph_name(ch)
+        pen = T2CharStringPen(adv, None)
+        bp = BoundsPen(None)
+        for s in shapes:
+            s.draw(pen)
+            s.draw(bp)
+        charstrings[name] = pen.getCharString()
+        metrics[name] = (adv, round(bp.bounds[0]) if bp.bounds else 0)
+    fb.setupCFF("DuyanSample-Regular", {"FullName": "Duyan Sample Regular"}, charstrings, {})
+    fb.setupHorizontalMetrics(metrics)
+    fb.setupHorizontalHeader(ascent=1000, descent=-280)
+    fb.setupNameTable({"familyName": "Duyan Sample", "styleName": "Regular", "psName": "DuyanSample-Regular",
+                       "version": "Version 0.003", "copyright": "Copyright 2026 The Duyan Project Authors"})
+    fb.setupOS2(sTypoAscender=880, sTypoDescender=-120, sTypoLineGap=0, usWinAscent=1000, usWinDescent=280,
+                sxHeight=540, sCapHeight=720, achVendID="NONE")
+    fb.setupPost()
+    out = os.path.join(HERE, "sample", "Duyan-Sample.otf")
+    fb.save(out)
+    print("已生成", os.path.relpath(out, HERE), len(table), "个字", f"（检查出 {problems} 处问题）")
+
+
+if __name__ == "__main__":
+    main()

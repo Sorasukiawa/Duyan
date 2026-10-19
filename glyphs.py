@@ -1,0 +1,22 @@
+"""把西文、汉字的轮廓收集起来，摆好位置：西文按左右边距排，汉字步进 1000。"""
+import importlib
+
+from outline import bounds
+
+
+def collect():
+    """返回 {字符: (轮廓列表, 步进宽度)}。"""
+    out = {}
+    latin = importlib.import_module("latin")
+    for ch, fn in latin.GLYPHS.items():
+        shapes, extra_l, extra_r = fn()
+        x0, _, x1, _ = bounds(shapes)
+        lsb, rsb = latin.SIDE + extra_l, latin.SIDE + extra_r
+        out[ch] = ([s.moved(lsb - x0) for s in shapes], round(x1 - x0 + lsb + rsb))
+    try:
+        han = importlib.import_module("han")
+    except ModuleNotFoundError:
+        return out
+    for ch, fn in han.GLYPHS.items():
+        out[ch] = (fn(), 1000)
+    return out
