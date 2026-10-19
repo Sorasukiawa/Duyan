@@ -16,7 +16,7 @@ STEM, HAIR = 100, 50
 CSTEM, CHAIR = 108, 52
 SO, TIP, BR = 54, 12, 42    # 衬线：伸出长度、末端厚度、托角高度
 FO, FD, FT, FB = 58, 38, 12, 58   # 小写竖顶的楔形入笔：伸出、下斜、末端厚度、托角
-SIDE = 34                   # 默认左右边距
+SIDE = 40                   # 默认左右边距（小写、数字、标点；大写见 glyphs.CAP_SIDE）
 
 
 # ───────── 零件（都按顺时针给节点）─────────
@@ -294,6 +294,133 @@ def g_t():
     ], name="t")], 0, 0
 
 
+def g_b():
+    """b：竖（顶上楔形入笔）连右边的碗，底部平切；碗在竖的右边沿上下各形成一个夹角。"""
+    x = SO
+    x0 = x + STEM
+    xr = x0 + 320
+    return [Shape(flag(x, ASC) + [
+        n(x0, 506, dout=42),                      # 碗顶接竖
+        n(x0 + 156, XH + OS, R, t=0.6),
+        n(xr, XH / 2, D, t=0.58),
+        n(x0 + 150, -OS, L, t=0.6),
+        n(x0, 34, din=140, t="line"),             # 碗底接竖
+        n(x0, 0), n(x, 0, t="line"),
+    ], name="b"), counter(x0, 1, -OS, XH + OS, xr, ct=432, cb=106, name="b 字怀")], 0, 0
+
+
+def g_q():
+    """q：左边的碗连右竖，竖顶斜切成尖往右上挑，竖底带脚。"""
+    sx = 360
+    return [Shape([
+        n(sx, 506, din=318),                      # 碗顶接竖，转向右上的斜切
+        n(sx + STEM, XH + 24, tip=True),          # 竖顶的尖
+        n(sx + STEM, XH - 40, D, t="line"),
+    ] + foot(sx, y=DESC) + [
+        n(sx, 34, dout=220),                      # 碗底接竖
+        n(250, -OS, L, t=0.6),
+        n(40, XH / 2, U, t=0.58),
+        n(250, XH + OS, R, t=0.6),
+    ], name="q"), counter(sx, -1, -OS, XH + OS, 40, ct=432, cb=106, name="q 字怀")], 0, 0
+
+
+def g_j():
+    """j：竖往下伸进下伸部，向左弯成带球的尾巴；尾巴伸到前一个字母底下。"""
+    x = SO + 60
+    r = 46
+    bx, by = x - 106, DESC + r + 2
+    return [Shape(flag(x, XH) + [
+        n(x + STEM, -40, D),                      # 右边沿往下，开始往左弯
+        n(bx + 16, DESC + 2, L, t=0.6),           # 尾巴底，顺着进球
+        n(bx - r, by, U, t=0.5523),               # 球左
+        n(bx, by + r, R),                         # 球顶，往右卷进尾巴上沿
+        n(x, -24, U, t="line"),                   # 左边沿
+    ], name="j"), circle(x + STEM / 2 + 4, XH + 168, 56, name="j 点")], -96, 0
+
+
+def g_f():
+    """f：竖、顶上往右弯的钩（末端收成球）、横杠一条轮廓；钩伸到后一个字母上方。"""
+    x = 70
+    r = 46
+    bx, by = x + 244, ASC - 62
+    bl, br_ = x - 74, x + STEM + 112             # 横杠左右端
+    return [Shape([
+        n(x, XH - HAIR), n(bl, XH - HAIR), n(bl, XH), n(x, XH, t="line"),
+        n(x, ASC - 170, U),                       # 左边沿往上，弯进钩的外沿
+        n(x + 132, ASC + OS, R, t=0.58),          # 钩外沿顶
+        n(bx + r, by, D, t=0.6),                  # 球右
+        n(bx, by - r, L, t=0.5523),               # 球底
+        n(bx - r, by, U),                         # 球左，往上卷进钩的内沿
+        n(x + 140, ASC + OS - HAIR, L),           # 钩内沿顶
+        n(x + STEM, ASC - 176, D, t="line"),      # 内沿落到竖的右边沿
+        n(x + STEM, XH), n(br_, XH), n(br_, XH - HAIR), n(x + STEM, XH - HAIR, t="line"),
+    ] + foot(x, ol=SO, orr=SO + 6), name="f")], 0, -64
+
+
+def g_g():
+    """g（双层）：上碗一个圈；耳朵从上碗右上角伸出；下面的连笔从上碗左下出来，
+    往下再往右成为下圈的顶，下圈绕一圈回到连笔左边，中间是下面的字怀。"""
+    up = ring(26, 340, 214, XH + OS, thick=88, thin=46, name="g 上碗")
+    ear = Shape([
+        n(292, 476, hid=True), n(302, 540, din=84, dout=12),
+        n(414, 558, din=8), n(416, 518, dout=198), n(306, 458, din=214, hid=True),
+    ], name="g 耳朵")
+    low = Shape([
+        n(234, DESC + 2, L, t=0.6),               # 下圈外沿底
+        n(22, -50, U, t=0.58),                    # 下圈外沿左
+        n(74, 150, 72),                           # 连笔左边沿往上
+        n(118, 252, hid=True), n(140, 240, hid=True),
+        n(142, 200, dout=272),                    # 连笔右边沿往下
+        n(244, 112, R, t=0.6),                    # 下圈顶（连笔的横）
+        n(454, -44, D, t=0.6),                    # 下圈外沿右
+    ], name="g 下圈")
+    hole = Shape([n(224, 68, R, t=0.58), n(398, -44, D, t=0.58), n(236, DESC + 54, L, t=0.62), n(78, -40, U, t=0.66)],
+                 hole=True, name="g 下字怀")
+    return up + [ear, low, hole], 0, 0
+
+
+def g_k():
+    """k：竖、细臂、粗腿一条轮廓。臂从竖的右边沿斜着伸到 x 高度，腿从臂上分出往右下。"""
+    x = SO
+    x0 = x + STEM
+    arm_l, arm_r = _edges((x0 - 30, 150), (x0 + 236, XH), HAIR * 1.3)
+    leg_l, leg_r = _edges((x0 + 96, 330), (x0 + 300, 0), STEM * 1.06)
+    # 臂的上沿碰到竖右边沿（肩）、臂的下沿碰到竖右边沿（夹角）
+    yu = arm_l[0][1] + (x0 - arm_l[0][0]) * (arm_l[1][1] - arm_l[0][1]) / (arm_l[1][0] - arm_l[0][0])
+    yl = arm_r[0][1] + (x0 - arm_r[0][0]) * (arm_r[1][1] - arm_r[0][1]) / (arm_r[1][0] - arm_r[0][0])
+    return [Shape(flag(x, ASC) + [
+        n(x0, yu),                                # 臂上沿离开竖
+    ] + top_serif(arm_l, arm_r, XH, 22, 30) + [
+        n(*_isect(arm_r, leg_r)),                 # 臂和腿之间的夹角
+    ] + foot_serif(leg_l, leg_r, 0, 22, 44, brl=24) + [
+        n(*_isect(arm_r, leg_l)),                 # 腿的左边沿碰到臂的下沿
+        n(x0, yl, t="line"),                      # 臂下沿回到竖
+    ] + foot(x, orr=SO - 6), name="k")], 0, 0
+
+
+def g_x():
+    """x：粗笔（左上到右下）、细笔（右上到左下）交叉，四个衬线，一条轮廓。"""
+    W = 500
+    kl, kr = _edges((70, XH), (W - 70, 0), STEM * 1.06)
+    nl, nr = _edges((W - 76, XH), (76, 0), HAIR * 1.2)
+    return [Shape(top_serif(kl, kr, XH, 26, 22) + [n(*_isect(kr, nl))] + top_serif(nl, nr, XH, 24, 26)
+                  + [n(*_isect(nr, kr))] + foot_serif(kl, kr, 0, 22, 30) + [n(*_isect(kl, nr))]
+                  + foot_serif(nl, nr, 0, 28, 22) + [n(*_isect(nl, kl))], name="x")], 0, 0
+
+
+def g_z():
+    """z：顶横、斜笔、底横一条轮廓；顶横左端往下、底横右端往上各有一个小喙。"""
+    ht, hb = HAIR + 4, HAIR + 6
+    k = 0.5074                                    # 斜笔每升高 1 往右 k
+    right = lambda y: 432 - (XH - y) * k          # 斜笔右边沿
+    left = lambda y: 304 - (XH - y) * k           # 斜笔左边沿
+    return [Shape([
+        n(36, XH), n(right(XH), XH, t="line"),
+        n(right(hb), hb), n(396, hb), n(446, hb + 62, tip=True), n(452, 0), n(left(0), 0, t="line"),
+        n(left(XH - ht), XH - ht), n(90, XH - ht), n(38, XH - ht - 62, tip=True),
+    ], name="z")], 0, 0
+
+
 # ───────── 斜笔 ─────────
 
 def _x_at(e, y):
@@ -483,5 +610,6 @@ def g_period():
 GLYPHS = {
     "a": g_a, "c": g_c, "d": g_d, "e": g_e, "h": g_h, "i": g_i, "l": g_l, "m": g_m, "n": g_n,
     "o": g_o, "p": g_p, "r": g_r, "s": g_s, "t": g_t, "u": g_u, "v": g_v, "w": g_w, "y": g_y,
+    "b": g_b, "f": g_f, "g": g_g, "j": g_j, "k": g_k, "q": g_q, "x": g_x, "z": g_z,
     "A": g_A, "C": g_C, "D": g_D, "I": g_I, "O": g_O, "5": g_5, ".": g_period,
 }

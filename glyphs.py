@@ -3,15 +3,24 @@ import importlib
 
 from outline import bounds
 
+CAP_SIDE = 50               # 大写字母的默认左右边距（小写、数字、标点用 latin.SIDE）
+
 
 def collect():
     """返回 {字符: (轮廓列表, 步进宽度)}。"""
     out = {}
     latin = importlib.import_module("latin")
-    for ch, fn in latin.GLYPHS.items():
+    table = dict(latin.GLYPHS)
+    for mod in ("caps", "figures"):
+        try:
+            table.update(importlib.import_module(mod).GLYPHS)
+        except ModuleNotFoundError:
+            pass
+    for ch, fn in table.items():
         shapes, extra_l, extra_r = fn()
         x0, _, x1, _ = bounds(shapes)
-        lsb, rsb = latin.SIDE + extra_l, latin.SIDE + extra_r
+        side = CAP_SIDE if ch.isupper() else latin.SIDE
+        lsb, rsb = side + extra_l, side + extra_r
         out[ch] = ([s.moved(lsb - x0) for s in shapes], round(x1 - x0 + lsb + rsb))
     try:
         han = importlib.import_module("han")

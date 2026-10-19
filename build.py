@@ -7,6 +7,7 @@ import argparse
 import os
 import sys
 
+from fontTools.agl import UV2AGL
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.t2CharStringPen import T2CharStringPen
@@ -21,8 +22,19 @@ UPM = 1000
 
 
 def glyph_name(ch):
-    return {".": "period", "，": "uni_comma_cjk", "。": "uni_period_cjk", " ": "space"}.get(
-        ch, ch if ch.isascii() and ch.isalnum() else "uni%04X" % ord(ch))
+    """标准字形名：西文用 Adobe 字形表里的名字（zero、comma、quoteright……），其余用 uniXXXX。"""
+    return UV2AGL.get(ord(ch)) if ord(ch) < 0x2100 and ord(ch) in UV2AGL else "uni%04X" % ord(ch)
+
+
+def kern_feature(table):
+    """把 kern.py 里的字对写成 OpenType 的 kern 特性（只收录两边字形都存在的字对）。"""
+    import kern
+    names = {ch: glyph_name(ch) for ch in table}
+    lines = []
+    for (a, b), v in kern.pairs().items():
+        if a in names and b in names and v:
+            lines.append(f"    pos {names[a]} {names[b]} {v};")
+    return "languagesystem DFLT dflt;\nlanguagesystem latn dflt;\n\nfeature kern {\n" + "\n".join(lines) + "\n} kern;\n", len(lines)
 
 
 def main():
@@ -64,13 +76,15 @@ def main():
     fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=1000, descent=-280)
     fb.setupNameTable({"familyName": "Duyan Sample", "styleName": "Regular", "psName": "DuyanSample-Regular",
-                       "version": "Version 0.004", "copyright": "Copyright 2026 The Duyan Project Authors"})
+                       "version": "Version 0.005", "copyright": "Copyright 2026 The Duyan Project Authors"})
     fb.setupOS2(sTypoAscender=880, sTypoDescender=-120, sTypoLineGap=0, usWinAscent=1000, usWinDescent=280,
                 sxHeight=540, sCapHeight=720, achVendID="NONE")
     fb.setupPost()
+    fea, kerned = kern_feature(table)
+    fb.addOpenTypeFeatures(fea)
     out = os.path.join(HERE, "sample", "Duyan-Sample.otf")
     fb.save(out)
-    print("已生成", os.path.relpath(out, HERE), len(table), "个字", f"（检查出 {problems} 处问题）")
+    print("已生成", os.path.relpath(out, HERE), len(table), "个字", f"{kerned} 个字距对", f"（检查出 {problems} 处问题）")
 
 
 if __name__ == "__main__":

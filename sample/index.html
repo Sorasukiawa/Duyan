@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>渡言小样</title>
 <style>
-  @font-face { font-family: "Duyan Sample"; src: url("Duyan-Sample.otf?v=4") format("opentype"); }
+  @font-face { font-family: "Duyan Sample"; src: url("Duyan-Sample.otf?v=5") format("opentype"); }
   :root { --paper: #F4F1EA; --ink: #1D1C1A; --accent: #21505C; --muted: #6F6A60; --line: #DED8CC; --soft: #EBE7DD; }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) { --paper: #171716; --ink: #ECE9E2; --accent: #7FB3BE; --muted: #A19C92; --line: #34322E; --soft: #201F1D; }
@@ -37,7 +37,7 @@
   .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 18px; }
   .grid div { background: var(--paper); font-size: clamp(44px, 9vw, 84px); line-height: 1.5; text-align: center; }
   .status li { margin-bottom: 4px; }
-  .abc { font-size: clamp(40px, 8vw, 76px); line-height: 1.3; letter-spacing: .04em; word-break: break-all; }
+  .abc { font-size: clamp(30px, 6.4vw, 62px); line-height: 1.3; letter-spacing: .03em; word-break: break-all; }
   .para { font-size: clamp(20px, 2.6vw, 24px); line-height: 1.6; max-width: 640px; }
   .para.small { font-size: 16px; }
   @media (max-width: 640px) { .pairs { grid-template-columns: 1fr; } .grid { grid-template-columns: repeat(4, 1fr); } }
@@ -45,7 +45,7 @@
 </head>
 <body>
 <main>
-  <div class="meta">DUYAN DRAFT · 小样 0.4 · 全部字形自绘</div>
+  <div class="meta">DUYAN DRAFT · 小样 0.5 · 全部字形自绘</div>
   <div class="hero s">渡言 <span>Duyan</span></div>
   <p class="lead">一支笔，写两种文字。中文和英文用同一套笔法从零画出：竖粗横细，英文的楔形衬线对应宋体横画末端的喙，英文的球形收笔对应汉字的点。没有使用任何现成字体的轮廓。</p>
 
@@ -59,14 +59,19 @@
   <div class="line"><img class="ref" src="ref-anthropic-serif.png" alt="Anthropic Serif 参考"></div>
   <p class="note">比例参考了它（x 高度 540、大写 720、中等粗细对比），轮廓是我们自己构造的。差别在于：字形略窄、衬线更短更利落、a 和 c 的球形收笔更圆。</p>
 
-  <h2>英文字母</h2>
-  <div class="abc s">acdehilmno</div>
-  <div class="abc s">prstuvwy</div>
-  <div class="abc s">ACDIO 5.</div>
-  <div class="label">正文字号</div>
-  <p class="para s">Our type is drawn one line at a time. It has no outlines copied in.</p>
-  <p class="para small s">Our type is drawn one line at a time. It has no outlines copied in.</p>
-  <p class="note">现在只画了这 25 个英文字形，所以示例句子只用得上这些字母（还没有逗号）。</p>
+  <h2>英文字符集</h2>
+  <div class="abc s">abcdefghijklm</div>
+  <div class="abc s">nopqrstuvwxyz</div>
+  <div class="abc s">ABCDEFGHIJKLM</div>
+  <div class="abc s">NOPQRSTUVWXYZ</div>
+  <div class="abc s">0123456789</div>
+  <div class="abc s">.,:;!? ‘’“”'" ()-–—/</div>
+
+  <h2>英文正文</h2>
+  <div class="label">24 像素</div>
+  <p class="para s">Duyan is a serif typeface drawn from scratch. Its Latin letters and its Chinese strokes share one pen: verticals are heavy, horizontals are light, and every wedge serif has a matching beak at the end of a Song-style stroke.</p>
+  <div class="label">16 像素</div>
+  <p class="para small s">THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. Sphinx of black quartz, judge my vow! Pack my box with five dozen liquor jugs; 1234567890. “Typography is what language looks like.” (We’re still drawing — slowly, line by line.)</p>
 
   <h2>笔法对照 · 同一支笔</h2>
   <div class="pairs">
@@ -90,12 +95,13 @@
 
   <h2>现在的状态</h2>
   <ul class="status note">
-    <li>英文 25 个字形：a c d e h i l m n o p r s t u v w y、A C D I O、5 和句点。</li>
+    <li>英文：小写 26、大写 26、数字 10、常用标点 18 个（还没有 &amp;、@ 这类符号），226 个常用字距对。</li>
     <li>汉字 14 个、假名 1 个、中文标点 2 个。</li>
-    <li>只有 Regular 一个字重；还没做字距调整（kerning）和小字号的细节优化。</li>
+    <li>只有 Regular 一个字重；还没做小字号的细节优化。</li>
     <li>0.3 换了造字方式：每一笔（连笔也算一笔）直接画成一条闭合轮廓，在曲线的极值点和转角放节点，和在造字软件里画字一样；横折的肩、横撇的转角、球形收笔都画在轮廓里，不再拼补丁。</li>
     <li>每次出字体前自动按设计意图检查：该藏起来的端点有没有露头、轮廓有没有打结、有没有没标明的尖角、两笔的边有没有擦边或贴着走、笔画之间有没有窄缝。现在 42 个字形全部通过。</li>
     <li>0.4：A 的头改回第一版那样的平头（宽 76），两角落在两条腿的外沿上，不再有多伸出去的一角。</li>
+    <li>0.5：补齐英文字母、数字和常用标点，加上字距；N 的斜笔改成等宽的平行四边形。</li>
     <li>这是看方向用的小样：粗细、比例、笔法定下来以后，再按笔画零件批量扩字。</li>
   </ul>
 </main>
