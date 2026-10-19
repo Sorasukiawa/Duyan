@@ -143,7 +143,11 @@ def check(shapes, gap=34):
             if a.dout is None or b.din is None:
                 continue
             if handle_reach(a, b, u, v)[0] is None and abs(u[0] * v[1] - u[1] * v[0]) > 1e-3:
-                issues.append(("走向不顺", (a.x + b.x) / 2, (a.y + b.y) / 2, f"{s.name or '笔画'} 这一段两端的走向对不上"))
+                # 两端往弦的两侧偏是正常的 S 形（拐点在中间）；往同一侧偏、交点却在背后才会打卷
+                c1 = u[0] * chord[1] - u[1] * chord[0]
+                c2 = chord[0] * v[1] - chord[1] * v[0]
+                if c1 * c2 > 0:
+                    issues.append(("走向不顺", (a.x + b.x) / 2, (a.y + b.y) / 2, f"{s.name or '笔画'} 这一段两端的走向对不上"))
         for q, (tin, tout) in zip(s.nodes, tangents(s)):
             turn = abs(math.degrees(math.atan2(tin[0] * tout[1] - tin[1] * tout[0], tin[0] * tout[0] + tin[1] * tout[1])))
             if 3 < turn < 25 and not q.hid:
