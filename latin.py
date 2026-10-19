@@ -407,7 +407,9 @@ def g_A():
     """A：两条腿、顶、横杠一条外轮廓，横杠上面的三角形是字怀。脚衬线顺着斜边。"""
     W = 700
     Y = CAP + 12
-    apex = (W / 2 + 6, CAP + 56)                  # 两条外沿延长后的交点，在顶上方
+    flat = 76                                     # 顶上平头的宽度（和第一版一样宽，但两角都落在腿的外沿上）
+    k = (W / 2 + 6 - 54) / 1 + (W - 52 - W / 2 - 6)   # 两条外沿在底边上张开的总宽
+    apex = (W / 2 + 6, Y + flat * Y / (k - flat))   # 两条外沿延长后的交点：在 Y 处正好张开 flat 那么宽
     nl_o, kr_o = (apex, (54, 0)), (apex, (W - 52, 0))
     tw, kw = CHAIR * 1.15, CSTEM * 1.04
     nl_i = _shift(nl_o, tw) if _x_at(_shift(nl_o, tw), 0) > 54 else _shift(nl_o, -tw)

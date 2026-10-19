@@ -64,7 +64,7 @@ def main():
     fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=1000, descent=-280)
     fb.setupNameTable({"familyName": "Duyan Sample", "styleName": "Regular", "psName": "DuyanSample-Regular",
-                       "version": "Version 0.003", "copyright": "Copyright 2026 The Duyan Project Authors"})
+                       "version": "Version 0.004", "copyright": "Copyright 2026 The Duyan Project Authors"})
     fb.setupOS2(sTypoAscender=880, sTypoDescender=-120, sTypoLineGap=0, usWinAscent=1000, usWinDescent=280,
                 sxHeight=540, sCapHeight=720, achVendID="NONE")
     fb.setupPost()
