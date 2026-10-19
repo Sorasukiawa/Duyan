@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>渡言小样</title>
+<style>
+  @font-face { font-family: "Duyan Sample"; src: url("Duyan-Sample.ttf?v=2") format("truetype"); }
+  :root { --paper: #F4F1EA; --ink: #1D1C1A; --accent: #21505C; --muted: #6F6A60; --line: #DED8CC; --soft: #EBE7DD; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --paper: #171716; --ink: #ECE9E2; --accent: #7FB3BE; --muted: #A19C92; --line: #34322E; --soft: #201F1D; }
+  }
+  :root[data-theme="dark"] { --paper: #171716; --ink: #ECE9E2; --accent: #7FB3BE; --muted: #A19C92; --line: #34322E; --soft: #201F1D; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  /* 说明文字用系统字体，样字才用渡言，免得缺字时混进别的字体 */
+  body { font-family: -apple-system, "PingFang SC", sans-serif; font-size: 15px; line-height: 1.75; }
+  main { max-width: 860px; margin: 0 auto; padding: 64px 24px 80px; }
+  .s { font-family: "Duyan Sample"; }
+  .meta { font-size: 12px; letter-spacing: .14em; color: var(--muted); }
+  h2 { font-size: 13px; font-weight: 600; letter-spacing: .06em; color: var(--accent); margin: 72px 0 6px; }
+  .note { color: var(--muted); font-size: 14px; max-width: 640px; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
+  .hero { font-size: clamp(72px, 15vw, 150px); line-height: 1.1; margin: 24px 0 0; }
+  .hero span { color: var(--accent); }
+  .lead { font-size: 17px; margin-top: 14px; max-width: 640px; }
+  .big { font-size: clamp(54px, 11vw, 110px); line-height: 1.15; }
+  .line { font-size: clamp(26px, 4.6vw, 46px); line-height: 1.35; }
+  .ref { display: block; height: 1.85em; width: auto; max-width: 100%; object-fit: contain; object-position: left; margin-top: -.15em; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ref { filter: invert(1); } }
+  .label { font-size: 12px; color: var(--muted); letter-spacing: .04em; margin-top: 18px; }
+  .pairs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+  .pair { background: var(--soft); border-radius: 6px; padding: 18px 16px 14px; text-align: center; }
+  .pair .g { font-size: clamp(64px, 12vw, 120px); line-height: 1.1; }
+  .pair .g i { font-style: normal; color: var(--accent); margin-left: .15em; }
+  .pair p { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 18px; }
+  .grid div { background: var(--paper); font-size: clamp(44px, 9vw, 84px); line-height: 1.5; text-align: center; }
+  .status li { margin-bottom: 4px; }
+  @media (max-width: 640px) { .pairs { grid-template-columns: 1fr; } .grid { grid-template-columns: repeat(4, 1fr); } }
+</style>
+</head>
+<body>
+<main>
+  <div class="meta">DUYAN DRAFT · 小样 0.2 · 全部字形自绘</div>
+  <div class="hero s">渡言 <span>Duyan</span></div>
+  <p class="lead">一支笔，写两种文字。中文和英文用同一套笔法从零画出：竖粗横细，英文的楔形衬线对应宋体横画末端的喙，英文的球形收笔对应汉字的点。没有使用任何现成字体的轮廓。</p>
+
+  <h2>一字一言</h2>
+  <div class="big s">一字一言，天大人文。</div>
+
+  <h2>英文 · 和参考对照</h2>
+  <div class="label">渡言</div>
+  <div class="line s">AI will have a vast impact on the world.</div>
+  <div class="label">Anthropic Serif（参考，本地渲染图，不会公开）</div>
+  <div class="line"><img class="ref" src="ref-anthropic-serif.png" alt="Anthropic Serif 参考"></div>
+  <p class="note">比例参考了它（x 高度 540、大写 720、中等粗细对比），轮廓是我们自己构造的。差别在于：字形略窄、衬线更短更利落、a 和 c 的球形收笔更圆。</p>
+
+  <h2>笔法对照 · 同一支笔</h2>
+  <div class="pairs">
+    <div class="pair"><div class="g s">n<i>一</i></div><p>英文的楔形衬线 ↔ 横画末端的喙</p></div>
+    <div class="pair"><div class="g s">a<i>文</i></div><p>英文的球形收笔 ↔ 汉字的点</p></div>
+    <div class="pair"><div class="g s">l<i>十</i></div><p>竖粗横细：主干 100 ↔ 竖画 104</p></div>
+  </div>
+
+  <h2>混排</h2>
+  <div class="line s">渡言 Duyan</div>
+  <div class="line s">文字の美 Claude Opus 5.5</div>
+  <div class="line s">永　中日　天大人文　AI will have a vast impact</div>
+  <p class="note">「の」是日文假名。这批汉字在简体中文、繁体中文、日文里写法完全相同；以后扩字时，三种写法不同的字会按地区分别画。</p>
+
+  <h2>字形一览</h2>
+  <div class="grid s">
+    <div>渡</div><div>言</div><div>永</div><div>字</div><div>美</div><div>文</div>
+    <div>天</div><div>大</div><div>人</div><div>中</div><div>日</div><div>口</div>
+    <div>十</div><div>一</div><div>の</div><div>A</div><div>C</div><div>O</div>
+  </div>
+
+  <h2>现在的状态</h2>
+  <ul class="status note">
+    <li>英文 25 个字形：a c d e h i l m n o p r s t u v w y、A C D I O、5 和句点。</li>
+    <li>汉字 14 个、假名 1 个、中文标点 2 个。</li>
+    <li>只有 Regular 一个字重；还没做字距调整（kerning）和小字号的细节优化。</li>
+    <li>0.2 修掉了笔画接口处的毛刺、小缺口和细缝：笔画相接时端头整个藏进另一笔里，不相接的笔画之间至少留 36 单位的空；轮廓改成平滑曲线，大字号下边缘不再发毛。</li>
+    <li>这是看方向用的小样：粗细、比例、笔法定下来以后，再按笔画零件批量扩字。</li>
+  </ul>
+</main>
+</body>
+</html>
