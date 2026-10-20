@@ -112,11 +112,11 @@ def c_ge():                    # 个
 
 
 def c_he_close():              # 合
-    return ren_top() + [heng(310, 690, 470, beak=0.6)] + KOU_(ID, 270, 730, 310, -30)
+    return ren_top() + [heng(316, 668, 470, beak=0.6)] + KOU_(ID, 270, 730, 310, -30)
 
 
 def c_quan():                  # 全
-    return ren_top() + wang(into((140, -70, 860, 590)))
+    return ren_top() + wang(into((150, -70, 850, 566)))
 
 
 def c_hui():                   # 会
@@ -162,7 +162,7 @@ def c_shen_what():             # 什
 
 
 def c_ti():                    # 体
-    return lr(ren_left, ben, (310, -70, 945, 880), 0.9)
+    return lr(ren_left, ben, (310, -70, 930, 880), 0.9)
 
 
 def c_jiang():                 # 江
@@ -212,7 +212,7 @@ def c_shi_time():              # 时
 
 
 def c_lin():                   # 林
-    return lr(mu_left, mu, (370, -70, 945, 880), 0.9)
+    return lr(mu_left, mu, (370, -70, 925, 880), 0.9)
 
 
 def c_cun():                   # 村
@@ -272,7 +272,7 @@ def c_dui():                   # 对
 
 
 def c_shuang():                # 双
-    return lr(you_left, you, (390, -60, 945, 800))
+    return lr(you_left, you, (390, -60, 940, 800))
 
 
 # ───────── 上下、半包围 ─────────
