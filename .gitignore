@@ -2,3 +2,5 @@ __pycache__/
 .DS_Store
 # 参考字体的本地渲染图，只在本机对照用，不能公开
 sample/ref-anthropic-serif.png
+# 和参考字体的对照页（引用本地渲染图），只在本机看
+sample/compare.html

@@ -77,7 +77,12 @@ def main():
     fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=1000, descent=-280)
     fb.setupNameTable({"familyName": "Duyan Sample", "styleName": "Regular", "psName": "DuyanSample-Regular",
-                       "version": "Version 0.006", "copyright": "Copyright 2026 The Duyan Project Authors"})
+                       "version": "Version 0.006",
+                       "copyright": "Copyright 2026 The Duyan Project Authors (https://github.com/Sorasukiawa/Duyan)",
+                       "designer": "Sora", "vendorURL": "https://github.com/Sorasukiawa/Duyan",
+                       "licenseDescription": "This Font Software is licensed under the SIL Open Font License, Version 1.1. "
+                                             "This license is available with a FAQ at: https://openfontlicense.org",
+                       "licenseInfoURL": "https://openfontlicense.org"})
     fb.setupOS2(sTypoAscender=880, sTypoDescender=-120, sTypoLineGap=0, usWinAscent=1000, usWinDescent=280,
                 sxHeight=540, sCapHeight=720, achVendID="NONE")
     fb.setupPost()
