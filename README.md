@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/preview.png" alt="渡言 Duyan" width="100%"></p>
+<p align="center"><img src="brand/cover.png" alt="渡言 Duyan" width="100%"></p>
 
 # 渡言 Duyan
 
@@ -38,6 +38,10 @@
 python3 -m http.server 8766
 ```
 
+## 标志和封面
+
+[`brand/`](brand/) 里是文字标（`logo.svg`，深色背景用 `logo-dark.svg`）、单字图标（`mark.svg`、`icon.svg`）和封面（`cover.png`），都直接取渡言自己的字形轮廓，由 `python3 tools/brand.py` 生成。
+
 ## 自己构建
 
 需要 Python 3.9 以上。
@@ -64,4 +68,4 @@ python3 build.py
 
 Duyan (渡言, "words that ferry across") is a serif typeface for Chinese and Latin, drawn from scratch with code. The Chinese follows the Song (Ming) style; the Latin is a calm, bookish serif. Both share one pen: heavy verticals and light horizontals, wedge serifs that echo the beak at the end of a Song horizontal, and ball terminals that echo the Chinese dot. No outlines from existing fonts are used.
 
-It is an early work in progress (v0.6): basic Latin letters, figures and punctuation with kerning, and the first 100 Chinese characters. Build it with `pip3 install -r requirements.txt` and `python3 build.py`. Licensed under the [SIL Open Font License 1.1](OFL.txt).
+It is an early work in progress (v0.6): basic Latin letters, figures and punctuation with kerning, and the first 100 Chinese characters. Build it with `pip3 install -r requirements.txt` and `python3 build.py`. Logo, icon and cover live in [`brand/`](brand/), generated from the font's own outlines. Licensed under the [SIL Open Font License 1.1](OFL.txt).
