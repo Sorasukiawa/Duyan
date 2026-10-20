@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""生成小克体的文字标、单字图标和宣传封面，全部用小克体自己的字形。
+"""生成渡言的文字标、单字图标和宣传封面，全部用渡言自己的字形。
 
-- brand/logo.svg、logo-dark.svg：文字标。「小克体」三个字各写在一个田字格里（小朋友练字的格子），后面跟西文 Xiaoke。
-- brand/mark.svg：田字格里一个「克」，透明底；brand/icon.svg：纸色圆角方块上的同一个图案（头像、网站图标用）。
+- brand/logo.svg、logo-dark.svg：文字标。「渡言」两个字各写在一个田字格里（练字本的格子：汉字还在练），后面跟西文 Duyan。
+- brand/mark.svg：田字格里一个「渡」，透明底；brand/icon.svg：纸色圆角方块上的同一个图案（头像、网站图标用）。
 - brand/cover.png：宣传封面 / GitHub 社交预览图，由 brand/cover.html 截图得到。
 
-SVG 里的字直接取 sample/Xiaoke-Sample.otf 的轮廓，不依赖装字体；PNG 用无界面的 Chrome 截图导出
+SVG 里的字直接取 sample/Duyan-Sample.otf 的轮廓，不依赖装字体；PNG 用无界面的 Chrome 截图导出
 （脚本自己起一个本地网页服务）。先跑 build.py 出字体，再跑：
 
     python3 tools/brand.py
@@ -29,7 +29,7 @@ sys.path.insert(0, ROOT)
 import kern  # noqa: E402
 
 OUT = os.path.join(ROOT, "brand")
-FONT = os.path.join(ROOT, "sample", "Xiaoke-Sample.otf")
+FONT = os.path.join(ROOT, "sample", "Duyan-Sample.otf")
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
 INK, PAPER, ACCENT = "#1D1C1A", "#F4F1EA", "#21505C"          # 黛青：呼应「渡」的水色
@@ -103,7 +103,7 @@ def write(name, content):
 
 
 def check_cover():
-    """封面上的字都要是小克体已经有的字，不然会悄悄换成系统字体。"""
+    """封面上的字都要是渡言已经有的字，不然会悄悄换成系统字体。"""
     html = open(os.path.join(OUT, "cover.html"), encoding="utf-8").read()
     body = re.sub(r"<style.*?</style>|<title>.*?</title>|<[^>]+>", "", html, flags=re.S)
     missing = sorted({c for c in body if not c.isspace() and ord(c) not in _cmap})
@@ -135,21 +135,21 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     check_cover()
 
-    # 1. 文字标：「小克体」三个字各占一个田字格，后面跟 Xiaoke
+    # 1. 文字标：「渡言」两个字各占一个田字格，后面跟 Duyan
     box, gap = 150, 12
     boxes = "".join(tianzige(k * (box + gap), 0, box) + mark(k * (box + gap), 0, box, ch, INK, fit=0.74)
-                    for k, ch in enumerate("小克体"))
-    x0 = 3 * box + 2 * gap + 44
-    en, ew, (et, eb) = text("Xiaoke", 118, x0, box * 0.74, INK)
+                    for k, ch in enumerate("渡言"))
+    x0 = 2 * box + gap + 44
+    en, ew, (et, eb) = text("Duyan", 118, x0, box * 0.74, INK)
     w, h = x0 + ew + 8, box
     body = boxes + en
     write("logo.svg", svg(w, h, body))
     write("logo-dark.svg", svg(w, h, body.replace(INK, INK_DARK).replace(ACCENT, ACCENT_DARK).replace(GRID, GRID_DARK)))
 
-    # 2. 单字图标：田字格里一个「克」
-    write("mark.svg", svg(512, 512, tianzige(8, 8, 496) + mark(8, 8, 496, "克", INK, fit=0.76)))
+    # 2. 单字图标：田字格里一个「渡」
+    write("mark.svg", svg(512, 512, tianzige(8, 8, 496) + mark(8, 8, 496, "渡", INK, fit=0.78)))
     write("icon.svg", svg(512, 512, f'<rect width="512" height="512" rx="96" fill="{PAPER}"/>'
-                                    + tianzige(72, 72, 368) + mark(72, 72, 368, "克", INK, fit=0.76)))
+                                    + tianzige(72, 72, 368) + mark(72, 72, 368, "渡", INK, fit=0.78)))
 
     # 3. PNG 和封面
     httpd, base = serve()

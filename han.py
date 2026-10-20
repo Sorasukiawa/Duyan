@@ -1,4 +1,4 @@
-"""小克体的汉字：轮廓优先，宋体笔法。
+"""渡言的汉字：轮廓优先，宋体笔法。
 
 字身框 1000 × 1000（y 从 -120 到 880），字面大约 x 60–960、y -60–915。
 竖画 104、横画 60，和西文同一套粗细。
@@ -487,8 +487,9 @@ def wogou(x0, y0, xb, yb, x1, y1, wb=None, lean=290):
     ], name="卧钩")
 
 
-def piezhe(p0, p1, p2, w=None, head="cut"):
-    """撇折（厶、纟、云 的那一笔）：撇往左下到 p1，折回成提往右上，到 p2 收尖。"""
+def piezhe(p0, p1, p2, w=None, head="cut", end="tip"):
+    """撇折（厶、纟、云 的那一笔）：撇往左下到 p1，折回成提往右上，到 p2 收尖。
+    end="flat" 时后半截是一横（东 的那一笔）：粗细按横画，末端平收。"""
     w = V * 0.8 if w is None else w
     d1 = _unit((p1[0] - p0[0], p1[1] - p0[1]))
     n1 = (-d1[1], d1[0])                                       # 撇的左手边（屏幕右下）
@@ -498,9 +499,14 @@ def piezhe(p0, p1, p2, w=None, head="cut"):
     b0, b1 = _off(p0, n1, -w / 2), _off(p1, n1, -w / 2)        # 撇左上沿
     c0 = _off(p1, n2, w / 2)                                   # 提上沿起点
     e0 = _off(p1, n2, -w / 2)                                  # 提下沿起点
+    top = [n(b0[0], b0[1] + (8 if head == "cut" else 0), hid=head == "hid"), n(*a0, hid=head == "hid")]
+    if end == "flat":
+        c0, e0 = _off(p1, n2, T), _off(p1, n2, -T)
+        ic = _lineint(a0, a1, c0, (c0[0] + d2[0], c0[1] + d2[1]))
+        oc = _lineint(b0, b1, e0, (e0[0] + d2[0], e0[1] + d2[1]))
+        return Shape(top + [n(*ic), n(*_off(p2, n2, T)), n(*_off(p2, n2, -T), t="line"), n(*oc, tip=True)], name="撇折")
     ic = _lineint(a0, a1, c0, p2)                              # 里面的夹角
     oc = _lineint(b0, b1, e0, p2)                              # 外面的尖角
-    top = [n(b0[0], b0[1] + (8 if head == "cut" else 0), hid=head == "hid"), n(*a0, hid=head == "hid")]
     return Shape(top + [n(*ic), n(*p2, tip=True), n(*oc, tip=True)], name="撇折")
 
 
