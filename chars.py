@@ -23,12 +23,12 @@ def _w(k, fn):
 
 def shang(m=ID):
     """上"""
-    return [S_(m, 430, 830, 90, top="head", end="hid"), H_(m, 430, 760, 470, entry=None, beak=0.7), H_(m, 80, 920, 90)]
+    return [S_(m, 430, 830, 90, top="head", end="hid"), H_(m, 430, 760, 470, entry=None, beak=0.7), H_(m, 56, 944, 90)]
 
 
 def ding(m=ID):
     """丁"""
-    return [H_(m, 80, 920, 740), SG_(m, 600, 740, -50)]
+    return [H_(m, 56, 944, 740), SG_(m, 600, 740, -50)]
 
 
 def ji(m=ID):
@@ -46,11 +46,11 @@ def jin_top(m=ID):
 # ───────── 单字 ─────────
 
 def c_er():                    # 二
-    return [heng(230, 770, 600), heng(90, 910, 170)]
+    return [heng(220, 780, 650), heng(56, 944, 110)]
 
 
 def c_san():                   # 三
-    return [heng(190, 810, 700), heng(240, 760, 420, beak=0.8), heng(90, 910, 110)]
+    return [heng(180, 820, 740), heng(232, 768, 430, beak=0.8), heng(56, 944, 80)]
 
 
 def c_shang():                 # 上
@@ -58,17 +58,17 @@ def c_shang():                 # 上
 
 
 def c_xia():                   # 下
-    return [heng(80, 920, 760), shu(470, 760, -70, top="hid", end="dew"), dian((500, 590), (650, 410))]
+    return [heng(56, 944, 760), shu(470, 760, -70, top="hid", end="dew"), dian((500, 590), (650, 410))]
 
 
 def c_bu():                    # 不
-    return [heng(90, 910, 760), pie((560, 760), (90, 250), bend=(-30, -10), head="hid"),
+    return [heng(62, 938, 760), pie((560, 760), (90, 250), bend=(-30, -10), head="hid"),
             shu(530, 600, -70, top="head", end="dew"), dian((620, 520), (830, 330))]
 
 
 def c_xiao():                  # 小
-    return [han.shugou(500, 860, 40, dx=-120, dy=84), pie((350, 640), (150, 300), w0=han.V * .96, bend=(-10, 0)),
-            dian((650, 650), (800, 420))]
+    return [han.shugou(500, 880, -40, dx=-130, dy=90), pie((338, 600), (104, 250), w0=han.V * .96, bend=(-10, 0)),
+            dian((650, 600), (880, 336))]
 
 
 def c_shan():                  # 山
@@ -76,11 +76,11 @@ def c_shan():                  # 山
 
 
 def c_le():                    # 了
-    return [hengpie_wangou(170, 800, 760, (440, 560), 520, -40)]
+    return [hengpie_wangou(124, 850, 770, (450, 560), 520, -50)]
 
 
 def c_fang():                  # 方
-    return [dian((470, 912), (546, 806)), heng(80, 920, 660), hengzhegou(330, 812, 450, -40),
+    return [dian((470, 912), (546, 806)), heng(56, 944, 660), hengzhegou(330, 812, 450, -40),
             pie((390, 666), (80, -60), bend=(-20, -10), head="hid")]
 
 
@@ -101,7 +101,7 @@ def c_zhu():                   # 主
 
 def c_nv():                    # 女
     return [han.piedian((450, 880), (240, 420), (800, -30)), pie((700, 610), (120, -50), bend=(-40, -20), w0=han.V * 1.02),
-            heng(80, 920, 500)]
+            heng(56, 944, 500)]
 
 
 def c_jin():                   # 今
@@ -121,12 +121,12 @@ def c_quan():                  # 全
 
 
 def c_hui():                   # 会
-    return _w(0.94, lambda: ren_top(into((70, 300, 930, 900))) + [heng(290, 710, 500, beak=0.5), heng(80, 920, 320),
+    return _w(0.94, lambda: ren_top(into((70, 300, 930, 900))) + [heng(290, 710, 500, beak=0.5), heng(56, 944, 320),
                                          piezhe((440, 296), (226, -22), (660, 44)), dian((646, 200), (836, -20))])
 
 
 def c_you_friend():            # 友
-    return _w(0.95, lambda: [heng(80, 920, 640), pie((440, 870), (70, -60), bend=(-30, -30))]
+    return _w(0.95, lambda: [heng(56, 944, 640), pie((440, 870), (70, -60), bend=(-30, -30))]
               + you(into((300, -60, 930, 560))))
 
 
@@ -178,11 +178,11 @@ def c_shen_what():             # 什
 
 
 def c_ti():                    # 体
-    return lr(ren_left, ben, (310, -70, 915, 880), 0.9)
+    return lr(ren_left, ben, (310, -70, 905, 880), 0.9)
 
 
 def c_jiang():                 # 江
-    return lr(shui, gong, (340, 60, 930, 760))
+    return lr(shui, gong, (340, 20, 930, 800))
 
 
 def c_han():                   # 汉
@@ -313,7 +313,7 @@ def c_an():                    # 安
 
 def c_nv_m(m):
     return [han.piedian(m.p((450, 880)), m.p((240, 420)), m.p((800, -30))),
-            P_(m, (700, 610), (120, -50), bend=(-40, -20), w0=han.V * 1.02), H_(m, 80, 920, 500)]
+            P_(m, (700, 610), (120, -50), bend=(-40, -20), w0=han.V * 1.02), H_(m, 56, 944, 500)]
 
 
 def c_wan():                   # 完
@@ -341,13 +341,13 @@ def c_ku():                    # 苦
 
 
 def c_si():                    # 思
-    return tb(tian_, xin, (80, -70, 920, 360), 0.9, tbox=(170, 400, 830, 880))
+    return tb(tian_, xin, (56, -70, 944, 360), 0.9, tbox=(160, 400, 840, 880))
 
 
 def c_xiang_think():           # 想
     def top(m):
         return mu_left(into((90, 400, 420, 880), (40, -70, 340, 872))) + mu_box(into((460, 420, 900, 870)))
-    return tb(top, xin, (80, -70, 920, 350), 0.86)
+    return tb(top, xin, (56, -70, 944, 350), 0.86)
 
 
 def c_nian():                  # 念
@@ -359,7 +359,7 @@ def c_wang_forget():           # 忘
 
 
 def c_zhe():                   # 这
-    return bao(zou, wen, (330, 210, 914, 930))
+    return bao(zou, wen, (348, 210, 906, 930))
 
 
 def c_guo():                   # 过
