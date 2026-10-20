@@ -1,0 +1,4 @@
+# 渡言 Duyan 的作者名单（版权声明里的 The Duyan Project Authors 指的就是这里列出的人）
+# This is the list of Duyan Project Authors for copyright purposes.
+
+Sora (https://github.com/Sorasukiawa)

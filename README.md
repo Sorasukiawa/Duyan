@@ -1,52 +1,67 @@
-# 渡言 · 自绘小样
+<p align="center"><img src="docs/preview.png" alt="渡言 Duyan" width="100%"></p>
 
-全部字形由程序从零构造，不使用任何现成字体的轮廓。
+# 渡言 Duyan
 
-## 造字方式：轮廓优先
+**一支笔，写两种文字。** 一款从零自绘的中英文衬线字体，正在造字中。
 
-每一笔（连笔也算一笔）直接画成一条闭合轮廓，和在造字软件里画字一样：在曲线的极值点和转角处放节点，写明经过这个点时的走向；两个节点之间的弯度用「张力」控制（控制柄长度 = 张力 × 节点到两条切线交点的距离，0.55 左右是圆弧，越大越方）。
+汉字是宋体笔法，西文是温和、有书卷气的现代衬线，两种文字用同一套笔法画出来：竖粗横细，西文的楔形衬线对应横画末端的喙，西文的球形收笔对应汉字的点。所有字形都由程序一笔一笔构造，没有使用任何现成字体的轮廓。名字里的「渡」，是在中文和英文之间摆渡。
 
-- `outline.py`：节点、轮廓、张力曲线。
-- `latin.py`：英文小写和公用零件（竖连衬线、拱、碗、斜笔衬线）。每个字母一条外轮廓（加字怀），竖和拱、竖和碗相接的地方直接放一个角点。比例参考 Anthropic Serif（x 高度 540、大写 720），轮廓自己构造；主干 100、细线 50，衬线短而利落。
-- `caps.py`：英文大写（大写主干 108、细线 52）。
-- `figures.py`：数字（齐线，高 700）和西文标点。
-- `kern.py`：常用字距对，按形状分组写。
-- `han.py`：汉字和假名。宋体笔法：横（末端带喙）、竖（斜切起笔、垂露 / 悬针）、撇、捺（平出捺脚）、点、提；横折、横撇、横钩、横折钩、「了」的横撇连弯钩、「辶」的横折折撇都画成一条轮廓，转角的肩直接画在里面。竖画 104、横画 60；`weight()` 可以临时整体减细（笔画多的字用）。
-- `parts.py`：汉字部件（亻 氵 讠 辶 艹 宀 心 女 木 月 忄 阝 纟……）。部件按 1000×1000 的格子画，`into(格子)` 把它放进左右、上下的某一格：位置按格子缩放，笔画粗细不变。
-- `chars.py`：用部件拼出来的常用字（第一批 86 个），`lr()`、`tb()` 是左右、上下结构的拼法。
-- `glyphs.py`：把字收集起来摆好位置。
-- `build.py`：先检查，再装配成 `sample/Duyan-Sample.otf`（CFF，直接存三次曲线）。`--strict` 时有问题就不出字体。
-- `sample/index.html`：小样展示页（`python3 -m http.server 8766` 后打开 http://localhost:8766/sample/）。
+[设计与造字方式](docs/DESIGN.md) · [English](#english)
 
-`sample/ref-anthropic-serif.png` 是参考字体的本地渲染图，只用来对照，不要公开发布（已写进 `.gitignore`）。
+## 进度
 
-## 检查
+现在是 0.6 小样，还不能当正文字体用：没收录的字会由系统里的其他字体顶上。
 
-`tools/check.py` 按设计意图核对，不猜「这个尖是不是故意的」：
+- 西文：大小写字母、数字、常用标点，226 个常用字距对。还没有 &、@、# 这类符号和带重音的字母。
+- 汉字：100 个常用字（简体），另有假名「の」和中文逗号、句号。
+- 只有 Regular 一个字重。
 
-- 露头：标了 `hid`（应该藏进别的笔画）的点没被盖住，或离边不到 3 单位。
-- 打结：轮廓自己和自己相交。
-- 尖角：露在外面、内角小于 40° 却没标 `tip` 的角。
-- 擦边 / 贴边：两笔的边以小于 15° 相交，或相距不到 4 单位并行。
-- 窄缝：不相连的两块墨最近处不到 34 单位。
-- 走向不顺：一段曲线两端标的走向对不上，会扭成 S 形或打卷（正常的 S 形拐点除外）。
-- 小折角：轮廓上的点进出方向差 3°～25°，像没画顺的小拐。
-- 被吞：一笔的节点全落在另一条轮廓里面。macOS 的系统渲染（CoreText，Mac 上的浏览器也用它）会按嵌套关系「纠正」轮廓方向，把这样的轮廓当成字怀，重叠处就画成了镂空；FreeType 和我们自己的预览图都看不出来。「月」框里的短横就因此并进了外框，横之间的空当做成挖空的字怀。
+接下来按部件继续扩字，大致的节点：
 
-`tools/render_check.py` 在 macOS 上把系统渲染读出来的每条轮廓方向和字体文件里的逐条比对（会用 swiftc 编一个小工具到 `tools/.build/`），出字体后跑一遍。
+| 阶段 | 汉字数 | 大约能覆盖的日常文字 |
+| --- | --- | --- |
+| 现在 | 100 | |
+| 下一步 | 500 | 八成 |
+| | 1000 | 九成 |
+| | 2500（常用字） | 98% |
+| | 3500 | 99.5% |
+| 完整 | 6763（GB 2312） | |
 
-`tools/proof.py 输出.png [字符]` 出带节点和控制柄的预览图，检查出的问题用红圈标出。检查通过以后，还要用系统渲染放大到几百像素看一遍。
+之后再补繁体中文、日文写法不同的字和更多字重。
 
-## 笔法的对应关系
+## 试用
 
-| 西文 | 汉字 |
-| --- | --- |
-| 楔形衬线 | 横画末端的喙 |
-| 球形收笔（a、c、r） | 点 |
-| 主干 100 / 细线 50 | 竖画 104 / 横画 60 |
+- 字体文件：[`sample/Duyan-Sample.otf`](sample/Duyan-Sample.otf)（OpenType CFF），装好后在字体菜单里叫 Duyan Sample。
+- 小样页：在仓库目录里起一个本地服务，再打开 http://localhost:8766/sample/
 
-## 下一步
+```bash
+python3 -m http.server 8766
+```
 
-1. 西文已补齐大小写、数字、常用标点和常用字距；还差 &、@、# 这类符号和带重音的字母。
-2. 汉字按部件扩：第一批 50 多个部件、86 个常用字已经做了（加上之前的共 100 个汉字），接着按部件继续扩常用字，逐批校准。
-3. 繁中、日文写法不同的字，按地区分别画。
+## 自己构建
+
+需要 Python 3.9 以上。
+
+```bash
+pip3 install -r requirements.txt
+```
+
+```bash
+python3 build.py
+```
+
+`build.py` 先按设计意图检查每个字（该藏起来的端点有没有露头、轮廓有没有打结、两笔之间有没有窄缝……），再生成 `sample/Duyan-Sample.otf`；在 macOS 上还会核对系统渲染。检查规则和造字方式见 [docs/DESIGN.md](docs/DESIGN.md)。
+
+## 反馈
+
+还在早期。觉得哪个字别扭，欢迎在 Issues 里说，最好附上截图和字号。
+
+## 授权
+
+渡言采用 [SIL Open Font License 1.1](OFL.txt)：可以免费使用（包括商用）、嵌入网页和文档、修改和再分发；改出来的字体也要继续用 OFL，并且不能把字体文件单独拿去卖。造字代码和构建脚本属于字体的源文件，同样按 OFL 授权。
+
+## English
+
+Duyan (渡言, "words that ferry across") is a serif typeface for Chinese and Latin, drawn from scratch with code. The Chinese follows the Song (Ming) style; the Latin is a calm, bookish serif. Both share one pen: heavy verticals and light horizontals, wedge serifs that echo the beak at the end of a Song horizontal, and ball terminals that echo the Chinese dot. No outlines from existing fonts are used.
+
+It is an early work in progress (v0.6): basic Latin letters, figures and punctuation with kerning, and the first 100 Chinese characters. Build it with `pip3 install -r requirements.txt` and `python3 build.py`. Licensed under the [SIL Open Font License 1.1](OFL.txt).
