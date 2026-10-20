@@ -6,39 +6,37 @@
 <style>
   /* 封面上只用渡言已经有的字；tools/brand.py 出图前会核对 */
   @font-face { font-family: DY; src: url("../sample/Duyan-Sample.otf") format("opentype"); }
-  :root { --ink: #1D1C1A; --paper: #F4F1EA; --accent: #21505C; --grid: #9DB3B8; --muted: #6F6A60; --line: #DED8CC; }
+  :root { --ink: #1D1C1A; --paper: #F4F1EA; --accent: #21505C; --muted: #6F6A60; --line: #DED8CC; }
   * { box-sizing: border-box; }
   html, body { margin: 0; width: 1280px; height: 640px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: DY; }
-  .page { position: relative; width: 1280px; height: 640px; padding: 56px 80px; text-align: center; }
-  .meta { font-size: 15px; letter-spacing: .22em; color: var(--muted); }
-  /* 名字写在田字格里：汉字还在练 */
-  .lockup { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 46px; }
-  .box { width: 214px; height: 214px; border: 4px solid var(--accent); font-size: 166px; line-height: 204px; padding-top: 8px;
-         background:
-           repeating-linear-gradient(to bottom, var(--grid) 0 12px, transparent 12px 22px) center / 2.5px 100% no-repeat,
-           repeating-linear-gradient(to right, var(--grid) 0 12px, transparent 12px 22px) center / 100% 2.5px no-repeat; }
-  .latin { font-size: 150px; line-height: 1; margin-left: 40px; font-kerning: normal; }
-  .lead { font-size: 40px; margin: 40px 0 0; }
-  .lead-en { font-size: 23px; margin: 12px 0 0; color: var(--muted); }
-  .spec { position: absolute; left: 80px; right: 80px; bottom: 74px; display: flex; justify-content: center; gap: 44px; font-size: 18px;
-          color: var(--muted); border-top: 1px solid var(--line); padding-top: 20px; }
+  .page { position: relative; width: 1280px; height: 640px; padding: 64px 80px; }
+  .meta { font-size: 15px; letter-spacing: .2em; color: var(--muted); }
+  h1 { font-weight: 400; font-size: 118px; line-height: 1; margin: 40px 0 0; font-kerning: normal; }
+  h1 span { color: var(--accent); margin-left: .26em; }
+  .lead { font-size: 36px; margin: 34px 0 0; }
+  .lead-en { font-size: 26px; margin: 10px 0 0; color: var(--muted); }
+  .big { position: absolute; right: 84px; top: 78px; font-size: 350px; line-height: 1; color: var(--accent); }
+  .spec { position: absolute; left: 80px; right: 80px; bottom: 120px; display: flex; gap: 44px; font-size: 18px; color: var(--muted);
+          border-top: 1px solid var(--line); padding-top: 22px; }
   .spec b { color: var(--accent); font-weight: 400; margin-right: .55em; }
-  .url { position: absolute; left: 0; right: 0; bottom: 34px; font-size: 16px; color: var(--muted); }
+  .sample { position: absolute; left: 80px; right: 80px; bottom: 56px; font-size: 25px; display: flex; justify-content: space-between; }
+  .sample .url { color: var(--muted); font-size: 18px; align-self: flex-end; }
 </style>
 </head>
 <body>
 <div class="page">
   <div class="meta">CHINESE AND LATIN SERIF / V0.7 / 2026.10</div>
-  <div class="lockup"><div class="box">渡</div><div class="box">言</div><div class="latin">Duyan</div></div>
-  <div class="lead">一笔一笔练出来的字。</div>
-  <div class="lead-en">Learning to write, one stroke at a time.</div>
+  <h1>Duyan<span>渡言</span></h1>
+  <div class="lead">一字一言。</div>
+  <div class="lead-en">Every stroke drawn from scratch.</div>
+  <div class="big">渡</div>
   <div class="spec">
-    <span><b>Han</b>106 characters so far</span>
-    <span><b>Latin</b>A–Z a–z 0–9</span>
+    <span><b>Han</b>Song strokes, 106 so far</span>
+    <span><b>Latin</b>Bookish serif, A–Z 0–9</span>
     <span><b>Method</b>One pen, built in code</span>
     <span><b>License</b>SIL OFL 1.1</span>
   </div>
-  <div class="url">github.com/Sorasukiawa/Duyan</div>
+  <div class="sample"><span>山下江边，林中花草。The quick brown fox jumps over the lazy dog.</span><span class="url">github.com/Sorasukiawa/Duyan</span></div>
 </div>
 </body>
 </html>

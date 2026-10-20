@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """生成渡言的文字标、单字图标和宣传封面，全部用渡言自己的字形。
 
-- brand/logo.svg、logo-dark.svg：文字标。「渡言」两个字各写在一个田字格里（练字本的格子：汉字还在练），后面跟西文 Duyan。
-- brand/mark.svg：田字格里一个「渡」，透明底；brand/icon.svg：纸色圆角方块上的同一个图案（头像、网站图标用）。
+- brand/logo.svg、logo-dark.svg：文字标「Duyan 渡言」（西文墨色，汉字黛青）。
+- brand/mark.svg：单字图标「渡」，透明底；brand/icon.svg：纸色圆角方块上的「渡」（头像、网站图标用）。
 - brand/cover.png：宣传封面 / GitHub 社交预览图，由 brand/cover.html 截图得到。
 
 SVG 里的字直接取 sample/Duyan-Sample.otf 的轮廓，不依赖装字体；PNG 用无界面的 Chrome 截图导出
@@ -34,7 +34,6 @@ CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
 INK, PAPER, ACCENT = "#1D1C1A", "#F4F1EA", "#21505C"          # 黛青：呼应「渡」的水色
 INK_DARK, ACCENT_DARK = "#ECE9E2", "#7FB3BE"
-GRID, GRID_DARK = "#9DB3B8", "#4E6A70"     # 田字格中间的虚线：黛青兑上纸色
 
 _font = TTFont(FONT)
 _gs, _cmap, _hmtx = _font.getGlyphSet(), _font.getBestCmap(), _font["hmtx"]
@@ -81,16 +80,6 @@ def mark(x, y, size, ch="渡", fill=ACCENT, fit=0.8):
     return g
 
 
-def tianzige(x, y, size, line=ACCENT, dash=GRID):
-    """田字格：外框实线，中间一横一竖虚线。"""
-    sw = max(2.0, size * 0.022)
-    d = size * 0.06
-    return (f'<g fill="none"><rect x="{x + sw / 2:.2f}" y="{y + sw / 2:.2f}" width="{size - sw:.2f}" height="{size - sw:.2f}" '
-            f'stroke="{line}" stroke-width="{sw:.2f}"/>'
-            f'<path d="M{x + size / 2:.2f} {y + sw:.2f}V{y + size - sw:.2f}M{x + sw:.2f} {y + size / 2:.2f}H{x + size - sw:.2f}" '
-            f'stroke="{dash}" stroke-width="{sw * 0.6:.2f}" stroke-dasharray="{d:.2f} {d * 0.8:.2f}"/></g>')
-
-
 def svg(w, h, body):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w:.0f}" height="{h:.0f}" '
             f'viewBox="0 0 {w:.0f} {h:.0f}">{body}</svg>\n')
@@ -135,21 +124,20 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     check_cover()
 
-    # 1. 文字标：「渡言」两个字各占一个田字格，后面跟 Duyan
-    box, gap = 150, 12
-    boxes = "".join(tianzige(k * (box + gap), 0, box) + mark(k * (box + gap), 0, box, ch, INK, fit=0.74)
-                    for k, ch in enumerate("渡言"))
-    x0 = 2 * box + gap + 44
-    en, ew, (et, eb) = text("Duyan", 118, x0, box * 0.74, INK)
-    w, h = x0 + ew + 8, box
-    body = boxes + en
+    # 1. 文字标：Duyan 渡言。汉字和西文同字号，汉字的字面本来就比大写略高，正好压得住
+    size, pad = 120, 6
+    en, ew, (et, eb) = text("Duyan", size, 0, 0, INK)
+    gap = size * 0.3
+    zh, zw, (zt, zb) = text("渡言", size, ew + gap, 0, ACCENT)
+    top, bottom = min(et, zt) - pad, max(eb, zb) + pad
+    w, h = ew + gap + zw + pad, bottom - top
+    body = f'<g transform="translate(0 {-top:.2f})">{en}{zh}</g>'
     write("logo.svg", svg(w, h, body))
-    write("logo-dark.svg", svg(w, h, body.replace(INK, INK_DARK).replace(ACCENT, ACCENT_DARK).replace(GRID, GRID_DARK)))
+    write("logo-dark.svg", svg(w, h, body.replace(INK, INK_DARK).replace(ACCENT, ACCENT_DARK)))
 
-    # 2. 单字图标：田字格里一个「渡」
-    write("mark.svg", svg(512, 512, tianzige(8, 8, 496) + mark(8, 8, 496, "渡", INK, fit=0.78)))
-    write("icon.svg", svg(512, 512, f'<rect width="512" height="512" rx="96" fill="{PAPER}"/>'
-                                    + tianzige(72, 72, 368) + mark(72, 72, 368, "渡", INK, fit=0.78)))
+    # 2. 单字图标
+    write("mark.svg", svg(512, 512, mark(0, 0, 512, fit=0.86)))
+    write("icon.svg", svg(512, 512, f'<rect width="512" height="512" rx="96" fill="{PAPER}"/>' + mark(64, 64, 384)))
 
     # 3. PNG 和封面
     httpd, base = serve()

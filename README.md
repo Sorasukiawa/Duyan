@@ -2,9 +2,9 @@
 
 # 渡言 Duyan
 
-**一笔一笔练出来的字。** 一款从零自绘的中英文衬线字体，正在造字中。
+**一字一言。** 一款从零自绘的中英文衬线字体，正在造字中。
 
-西文是温和、有书卷气的衬线，汉字用同一支笔来写：竖粗横细，点是圆圆的水滴，横画末端带一个圆润的喙。汉字还在练，所以标志写在练字本的田字格里，等字练好了，格子就可以拿掉。名字里的「渡」，是在中文和英文之间摆渡。所有字形都从零画出，没有使用任何现成字体的轮廓。
+西文是温和、有书卷气的衬线，汉字用同一支笔来写：竖粗横细，点是圆圆的水滴，横画末端带一个圆润的喙。汉字还在一个字一个字地补齐、打磨。名字里的「渡」，是在中文和英文之间摆渡。所有字形都从零画出，没有使用任何现成字体的轮廓。
 
 [设计与造字方式](docs/DESIGN.md) · [汉字结构规范](docs/STRUCTURE.md) · [English](#english)
 
@@ -40,7 +40,7 @@ python3 -m http.server 8766
 
 ## 标志和封面
 
-[`brand/`](brand/) 里是文字标（`logo.svg`，深色背景用 `logo-dark.svg`）、单字图标（`mark.svg`、`icon.svg`）和封面（`cover.png`）。标志的样子取自小朋友练字用的田字格：文字标是「渡言」两个字各写在一个田字格里、后面跟 Duyan，单字图标是田字格里的「渡」。字都直接取渡言自己的字形轮廓，由 `python3 tools/brand.py` 生成。
+[`brand/`](brand/) 里是文字标（`logo.svg`，深色背景用 `logo-dark.svg`）、单字图标（`mark.svg`、`icon.svg`）和封面（`cover.png`）。文字标是两色的「Duyan 渡言」：西文墨色，汉字黛青；单字图标是黛青的「渡」。字都直接取渡言自己的字形轮廓，由 `python3 tools/brand.py` 生成。
 
 ## 自己构建
 
@@ -66,6 +66,6 @@ python3 build.py
 
 ## English
 
-Duyan (渡言, "words that ferry across") is a serif typeface for Chinese and Latin, drawn from scratch with code. The Latin is a calm, bookish serif; the Chinese is written with the same pen and is still learning: heavy verticals and light horizontals, round teardrop dots, a soft beak at the end of each horizontal. Until the Chinese grows up, the logo sits in a tianzige, the grid children use to practise writing. No outlines from existing fonts are used.
+Duyan (渡言, "words that ferry across") is a serif typeface for Chinese and Latin, drawn from scratch with code. The Latin is a calm, bookish serif; the Chinese is written with the same pen and is still growing, one character at a time: heavy verticals and light horizontals, round teardrop dots, a soft beak at the end of each horizontal. No outlines from existing fonts are used.
 
 It is an early work in progress (v0.7): basic Latin letters, figures and punctuation with kerning, and the first 106 Chinese characters. Build it with `pip3 install -r requirements.txt` and `python3 build.py`. Logo, icon and cover live in [`brand/`](brand/), generated from the font's own outlines. Licensed under the [SIL Open Font License 1.1](OFL.txt).
