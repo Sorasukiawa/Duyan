@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """把 glyphs.collect() 里的轮廓装配成小样字体 sample/Duyan-Sample.otf（CFF，直接存三次曲线）。
 
-装配前先跑一遍 tools/check.py：有问题就列出来；加 --strict 时有问题就不出字体。
+装配前先跑一遍 tools/check.py（轮廓）和 tools/structure.py（结构，规范见 docs/STRUCTURE.md）：
+有问题就列出来；加 --strict 时有问题就不出字体。
 出字体后在 macOS 上再用 tools/render_check.py 核对系统渲染。
 """
 import argparse
@@ -48,6 +49,11 @@ def main():
         for kind, x, y, msg in check(shapes):
             problems += 1
             print(f"{ch} {kind} ({x:.0f},{y:.0f}) {msg}")
+    import structure
+    for ch, r in structure.run().items():
+        for msg in structure.problems(ch, r):
+            problems += 1
+            print(f"{ch} 结构 {msg}")
     if problems and a.strict:
         sys.exit(f"有 {problems} 处问题，没有生成字体")
 

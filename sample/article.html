@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>渡言试排</title>
+<link rel="icon" href="../brand/icon.svg">
+<style>
+  @font-face { font-family: "Duyan Sample"; src: url("Duyan-Sample.otf?v=8") format("opentype"); }
+  :root { --paper: #F4F1EA; --ink: #1D1C1A; --accent: #21505C; --muted: #6F6A60; --line: #DED8CC; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --paper: #171716; --ink: #ECE9E2; --accent: #7FB3BE; --muted: #A19C92; --line: #34322E; }
+  }
+  :root[data-theme="dark"] { --paper: #171716; --ink: #ECE9E2; --accent: #7FB3BE; --muted: #A19C92; --line: #34322E; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  /* 说明文字用系统字体；正文全部用渡言，而且只用渡言已经画好的字 */
+  body { font-family: -apple-system, "PingFang SC", sans-serif; font-size: 14px; line-height: 1.7; }
+  article { max-width: 620px; margin: 0 auto; padding: 88px 24px 96px; }
+  .s { font-family: "Duyan Sample"; font-kerning: normal; }
+  .meta { font-size: 12px; letter-spacing: .14em; color: var(--muted); }
+  h1 { font-weight: 400; font-size: clamp(64px, 14vw, 104px); line-height: 1.1; margin: 28px 0 8px; color: var(--accent); }
+  .epigraph { font-size: 21px; color: var(--muted); margin: 0 0 56px; }
+  .body p { font-size: clamp(20px, 4.6vw, 25px); line-height: 2; margin: 0 0 1.25em; text-align: justify; }
+  .body p.end { color: var(--accent); margin-top: 2em; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 64px 0 20px; }
+  .note { color: var(--muted); font-size: 13px; }
+  .note a { color: var(--accent); }
+</style>
+</head>
+<body>
+<article>
+  <div class="meta">DUYAN 0.6 · 试排</div>
+  <h1 class="s">渡</h1>
+  <p class="epigraph s">Words that ferry across.</p>
+
+  <div class="body s">
+    <p>山下一个小村，村口一个古门。门边花红，江上月明。</p>
+    <p>她守门，他打工。日出，他上山干活，月下，他过江。他不认字，她认字。</p>
+    <p>她对他言，“认字不苦。”</p>
+    <p>今天认“山”，明天认“江”。认了“人”，也认了“心”。三个月过了，他认了三十个字。</p>
+    <p>他想，一个字，也如一个朋友。朋友不会忘了你，字也不会。</p>
+    <p>这天，他记下了“渡”字。她对他言，“渡，过江，过河，也过心。”</p>
+    <p class="end">一字一言，渡他过江。</p>
+  </div>
+
+  <hr>
+  <p class="note">这篇短文只用了渡言已经画好的 100 个汉字和中文逗号、句号，正文里没有一个字是系统字体顶替的。字还不多，所以写得像一首短诗。<a href="index.html">回到小样页</a></p>
+</article>
+</body>
+</html>
