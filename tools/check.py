@@ -8,6 +8,8 @@
 - 窄缝：不相连的两块墨，最近处不到 34 单位。
 - 走向不顺：一段曲线两端标的走向对不上（切线交点在背后），曲线会扭成 S 形或打卷。
 - 小折角：轮廓上的点进出方向差 3°～25°，看起来像没画顺的小拐。
+- 被吞：一笔的节点全落在另一条轮廓里面。系统渲染（CoreText）会把这样的轮廓当成字怀、反过来画，
+  重叠处变成镂空（「月」框里的短横两头都藏进同一条外框时就是这样）。
 """
 import math
 import os
@@ -130,6 +132,20 @@ def check(shapes, gap=34):
             if interior < 40 and not q.tip:
                 issues.append(("尖角", q.x, q.y, f"内角 {interior:.0f}°，没有标成有意的尖"))
 
+    # 被吞
+    holes = [p for s, p in zip(shapes, polys) if s.hole]
+    for si, s in enumerate(shapes):
+        if s.hole:
+            continue
+        pts = np.array([q.xy for q in s.nodes])
+        if holes and fill(pts, holes).all():
+            continue                           # 放在字怀里的笔画，嵌套关系是对的
+        for sj, t in enumerate(shapes):
+            if sj != si and not t.hole and fill(pts, [polys[sj]]).all():
+                x, y = pts.mean(0)
+                issues.append(("被吞", x, y, f"{s.name or '笔画'} 整笔落在 {t.name or '另一笔'} 里面，系统渲染会把它当成字怀"))
+                break
+
     # 走向不顺、小折角
     for s in shapes:
         k = len(s.nodes)
@@ -150,7 +166,7 @@ def check(shapes, gap=34):
                     issues.append(("走向不顺", (a.x + b.x) / 2, (a.y + b.y) / 2, f"{s.name or '笔画'} 这一段两端的走向对不上"))
         for q, (tin, tout) in zip(s.nodes, tangents(s)):
             turn = abs(math.degrees(math.atan2(tin[0] * tout[1] - tin[1] * tout[0], tin[0] * tout[0] + tin[1] * tout[1])))
-            if 3 < turn < 25 and not q.hid:
+            if 3 < turn < 25 and not q.hid and not q.tip:
                 issues.append(("小折角", q.x, q.y, f"进出方向差 {turn:.0f}°"))
 
     # 打结

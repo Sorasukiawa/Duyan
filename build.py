@@ -2,6 +2,7 @@
 """把 glyphs.collect() 里的轮廓装配成小样字体 sample/Duyan-Sample.otf（CFF，直接存三次曲线）。
 
 装配前先跑一遍 tools/check.py：有问题就列出来；加 --strict 时有问题就不出字体。
+出字体后在 macOS 上再用 tools/render_check.py 核对系统渲染。
 """
 import argparse
 import os
@@ -76,7 +77,7 @@ def main():
     fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=1000, descent=-280)
     fb.setupNameTable({"familyName": "Duyan Sample", "styleName": "Regular", "psName": "DuyanSample-Regular",
-                       "version": "Version 0.005", "copyright": "Copyright 2026 The Duyan Project Authors"})
+                       "version": "Version 0.006", "copyright": "Copyright 2026 The Duyan Project Authors"})
     fb.setupOS2(sTypoAscender=880, sTypoDescender=-120, sTypoLineGap=0, usWinAscent=1000, usWinDescent=280,
                 sxHeight=540, sCapHeight=720, achVendID="NONE")
     fb.setupPost()
@@ -85,6 +86,13 @@ def main():
     out = os.path.join(HERE, "sample", "Duyan-Sample.otf")
     fb.save(out)
     print("已生成", os.path.relpath(out, HERE), len(table), "个字", f"{kerned} 个字距对", f"（检查出 {problems} 处问题）")
+    import render_check
+    bad = render_check.run(out)
+    if bad:
+        for ch, flipped in bad:
+            print(f"{ch} 第 {', '.join(str(i + 1) for i in flipped)} 条轮廓被系统渲染当成了字怀")
+    elif bad is not None:
+        print("系统渲染核对通过")
 
 
 if __name__ == "__main__":

@@ -26,6 +26,11 @@ def collect():
         han = importlib.import_module("han")
     except ModuleNotFoundError:
         return out
-    for ch, fn in han.GLYPHS.items():
+    table = dict(han.GLYPHS)
+    try:
+        table.update(importlib.import_module("chars").GLYPHS)
+    except ModuleNotFoundError:
+        pass
+    for ch, fn in table.items():
         out[ch] = (fn(), 1000)
     return out

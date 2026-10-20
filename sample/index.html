@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>渡言小样</title>
 <style>
-  @font-face { font-family: "Duyan Sample"; src: url("Duyan-Sample.otf?v=5") format("opentype"); }
+  @font-face { font-family: "Duyan Sample"; src: url("Duyan-Sample.otf?v=6") format("opentype"); }
   :root { --paper: #F4F1EA; --ink: #1D1C1A; --accent: #21505C; --muted: #6F6A60; --line: #DED8CC; --soft: #EBE7DD; }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) { --paper: #171716; --ink: #ECE9E2; --accent: #7FB3BE; --muted: #A19C92; --line: #34322E; --soft: #201F1D; }
@@ -37,15 +37,22 @@
   .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 18px; }
   .grid div { background: var(--paper); font-size: clamp(44px, 9vw, 84px); line-height: 1.5; text-align: center; }
   .status li { margin-bottom: 4px; }
+  .parts { margin-top: 18px; border-top: 1px solid var(--line); }
+  .part { display: flex; align-items: baseline; gap: 18px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .part b { flex: none; width: 92px; font-size: 13px; font-weight: 500; color: var(--muted); }
+  .part b span { font-size: 22px; color: var(--accent); margin-right: 6px; }
+  .part .s { font-size: clamp(30px, 6vw, 52px); line-height: 1.2; letter-spacing: .08em; }
+  .grid.ten { grid-template-columns: repeat(10, 1fr); }
+  .grid.ten div { font-size: clamp(26px, 5.4vw, 52px); line-height: 1.6; }
   .abc { font-size: clamp(30px, 6.4vw, 62px); line-height: 1.3; letter-spacing: .03em; word-break: break-all; }
   .para { font-size: clamp(20px, 2.6vw, 24px); line-height: 1.6; max-width: 640px; }
   .para.small { font-size: 16px; }
-  @media (max-width: 640px) { .pairs { grid-template-columns: 1fr; } .grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 640px) { .pairs { grid-template-columns: 1fr; } .grid { grid-template-columns: repeat(4, 1fr); } .grid.ten { grid-template-columns: repeat(5, 1fr); } .part b { width: 64px; } }
 </style>
 </head>
 <body>
 <main>
-  <div class="meta">DUYAN DRAFT · 小样 0.5 · 全部字形自绘</div>
+  <div class="meta">DUYAN DRAFT · 小样 0.6 · 全部字形自绘</div>
   <div class="hero s">渡言 <span>Duyan</span></div>
   <p class="lead">一支笔，写两种文字。中文和英文用同一套笔法从零画出：竖粗横细，英文的楔形衬线对应宋体横画末端的喙，英文的球形收笔对应汉字的点。没有使用任何现成字体的轮廓。</p>
 
@@ -86,23 +93,54 @@
   <div class="line s">永　中日　天大人文　AI will have a vast impact</div>
   <p class="note">「の」是日文假名。这批汉字在简体中文、繁体中文、日文里写法完全相同；以后扩字时，三种写法不同的字会按地区分别画。</p>
 
-  <h2>字形一览</h2>
-  <div class="grid s">
-    <div>渡</div><div>言</div><div>永</div><div>字</div><div>美</div><div>文</div>
-    <div>天</div><div>大</div><div>人</div><div>中</div><div>日</div><div>口</div>
-    <div>十</div><div>一</div><div>の</div><div>A</div><div>C</div><div>O</div>
+  <h2>常用字 · 第一批</h2>
+  <div class="line s">你好，朋友。明天会好。</div>
+  <div class="line s">山下江边，林中花草。</div>
+  <div class="line s">他们不会忘了这一天。</div>
+  <p class="note">汉字按部件来造：先画 50 多个高频部件，再拼成字。同一个部件放进左右、上下不同的格子时，位置按格子缩放，笔画粗细不变；笔画多的字整体稍微减细一点，免得发黑。</p>
+
+  <h2>部件 → 字</h2>
+  <div class="parts">
+    <div class="part"><b><span>亻</span>单人旁</b><div class="s">他们你信什体</div></div>
+    <div class="part"><b><span>氵</span>三点水</b><div class="s">江汉河法活</div></div>
+    <div class="part"><b><span>讠</span>言字旁</b><div class="s">认让计记</div></div>
+    <div class="part"><b><span>辶</span>走之</b><div class="s">这过达边远</div></div>
+    <div class="part"><b><span>艹</span>草字头</b><div class="s">花草苦</div></div>
+    <div class="part"><b><span>宀</span>宝盖</b><div class="s">安完它守字</div></div>
+    <div class="part"><b><span>心</span>心字底</b><div class="s">思想念忘</div></div>
+    <div class="part"><b><span>女</span>女字旁</b><div class="s">好她如</div></div>
+    <div class="part"><b><span>木</span>木字旁</b><div class="s">林村相</div></div>
+    <div class="part"><b><span>月</span>月字旁</b><div class="s">明朋</div></div>
+    <div class="part"><b><span>忄</span>竖心旁</b><div class="s">忙性</div></div>
+    <div class="part"><b><span>阝</span>左耳刀</b><div class="s">阳队</div></div>
+    <div class="part"><b><span>人</span>人字头</b><div class="s">今个合全会</div></div>
+  </div>
+
+  <h2>汉字一览 · 100 字</h2>
+  <div class="grid ten s">
+    <div>一</div><div>十</div><div>口</div><div>日</div><div>中</div><div>人</div><div>大</div><div>天</div><div>文</div><div>言</div>
+    <div>永</div><div>字</div><div>美</div><div>渡</div><div>二</div><div>三</div><div>上</div><div>下</div><div>不</div><div>小</div>
+    <div>山</div><div>了</div><div>力</div><div>也</div><div>子</div><div>心</div><div>月</div><div>目</div><div>王</div><div>工</div>
+    <div>土</div><div>门</div><div>又</div><div>寸</div><div>生</div><div>干</div><div>本</div><div>古</div><div>木</div><div>女</div>
+    <div>方</div><div>出</div><div>自</div><div>主</div><div>今</div><div>个</div><div>合</div><div>全</div><div>会</div><div>友</div>
+    <div>只</div><div>他</div><div>们</div><div>你</div><div>信</div><div>什</div><div>体</div><div>江</div><div>汉</div><div>河</div>
+    <div>法</div><div>活</div><div>和</div><div>好</div><div>她</div><div>如</div><div>明</div><div>时</div><div>林</div><div>村</div>
+    <div>相</div><div>朋</div><div>红</div><div>阳</div><div>队</div><div>打</div><div>认</div><div>让</div><div>计</div><div>记</div>
+    <div>忙</div><div>性</div><div>对</div><div>双</div><div>安</div><div>完</div><div>它</div><div>守</div><div>花</div><div>草</div>
+    <div>苦</div><div>思</div><div>想</div><div>念</div><div>忘</div><div>这</div><div>过</div><div>达</div><div>边</div><div>远</div>
   </div>
 
   <h2>现在的状态</h2>
   <ul class="status note">
     <li>英文：小写 26、大写 26、数字 10、常用标点 18 个（还没有 &amp;、@ 这类符号），226 个常用字距对。</li>
-    <li>汉字 14 个、假名 1 个、中文标点 2 个。</li>
+    <li>汉字 100 个（第一批常用字 86 个，加上之前的 14 个）、假名 1 个、中文标点 2 个。</li>
     <li>只有 Regular 一个字重；还没做小字号的细节优化。</li>
     <li>0.3 换了造字方式：每一笔（连笔也算一笔）直接画成一条闭合轮廓，在曲线的极值点和转角放节点，和在造字软件里画字一样；横折的肩、横撇的转角、球形收笔都画在轮廓里，不再拼补丁。</li>
-    <li>每次出字体前自动按设计意图检查：该藏起来的端点有没有露头、轮廓有没有打结、有没有没标明的尖角、两笔的边有没有擦边或贴着走、笔画之间有没有窄缝。现在 42 个字形全部通过。</li>
+    <li>每次出字体前自动按设计意图检查：该藏起来的端点有没有露头、轮廓有没有打结、有没有没标明的尖角、两笔的边有没有擦边或贴着走、笔画之间有没有窄缝、有没有一笔整个落在另一条轮廓里。现在 183 个字形全部通过；另外用 macOS 的系统渲染逐字核对一遍。</li>
     <li>0.4：A 的头改回第一版那样的平头（宽 76），两角落在两条腿的外沿上，不再有多伸出去的一角。</li>
     <li>0.5：补齐英文字母、数字和常用标点，加上字距；N 的斜笔改成等宽的平行四边形。</li>
-    <li>这是看方向用的小样：粗细、比例、笔法定下来以后，再按笔画零件批量扩字。</li>
+    <li>0.6：汉字改为按部件造字，做了第一批常用部件和 86 个常用字；「辶」中间那笔画成真正的横折折撇；「月」的框和框里的短横画成一条轮廓（叠着画时 Mac 的系统渲染会把重叠处画成镂空）。</li>
+    <li>下一步：继续按部件扩常用字，逐批校准；繁中、日文写法不同的字按地区分别画。</li>
   </ul>
 </main>
 </body>

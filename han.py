@@ -7,11 +7,26 @@
 不相连的笔画在笔画深处交叉，要藏起来的端点标 hid，有意的尖标 tip。
 """
 import math
+from contextlib import contextmanager
 
 from outline import D, L, R, U, Shape, n
 
-V, H = 104, 60
+V0, H0 = 104, 60            # 标准粗细
+V, H = V0, H0               # 当前粗细（笔画多的字用 weight() 临时调细）
 T = H / 2
+
+
+@contextmanager
+def weight(kv=1.0, kh=None):
+    """临时调整竖画、横画的粗细：with weight(0.92): ... 里面画的笔画都按这个比例。"""
+    global V, H, T
+    old = V, H, T
+    V, H = V0 * kv, H0 * (kv if kh is None else kh)
+    T = H / 2
+    try:
+        yield
+    finally:
+        V, H, T = old
 
 
 # ───────── 几何小工具 ─────────
@@ -115,8 +130,9 @@ def shoulder(x1, y, lift=16):
     return [n(x1 - V - 14, y + T, R), n(x1 - 26, y + T + lift, R, t=0.62), n(x1, y - 34, D, t="line")]
 
 
-def shu_top(x, y0, kind="head", w=V):
+def shu_top(x, y0, kind="head", w=None):
     """竖的顶：沿左边沿往上进来，沿右边沿往下出去。head 是左高右低的斜切加圆肩。"""
+    w = V if w is None else w
     l, r = x - w / 2, x + w / 2
     if kind == "head":
         return [n(l, y0 + 16), n(r - 20, y0 - 2, -12), n(r, y0 - 38, D, t="line")]
@@ -124,8 +140,9 @@ def shu_top(x, y0, kind="head", w=V):
     return [n(l, y0, hid=hid), n(r, y0, hid=hid, t="line")]
 
 
-def shu_end(x, y1, kind="dew", w=V):
+def shu_end(x, y1, kind="dew", w=None):
     """竖的底：沿右边沿往下进来，沿左边沿往上出去。dew 垂露，needle 悬针。"""
+    w = V if w is None else w
     l, r = x - w / 2, x + w / 2
     if kind == "dew":
         return [n(r, y1 + 34, D), n(x + 2, y1 - 10, L, t=0.6), n(l, y1 + 26, U, t="line")]
@@ -135,8 +152,9 @@ def shu_end(x, y1, kind="dew", w=V):
     return [n(r, y1, hid=hid), n(l, y1, hid=hid, t="line")]
 
 
-def gou_end(x, y, dx=-120, dy=86, w=V):
+def gou_end(x, y, dx=-120, dy=86, w=None):
     """竖钩的底：右边沿圆转到底，向左上挑出尖，钩的上沿顺着弯回竖的左边沿。"""
+    w = V if w is None else w
     l, r = x - w / 2, x + w / 2
     tip = (x + dx, y + dy)
     bottom = (x + 4, y - 14)
@@ -180,9 +198,11 @@ def _pie_body(seg, wf, mids=(0.36, 0.7)):
     ] + _side(seg, wf, mids, -1)
 
 
-def pie(p0, p1, bend=(0, 0), w0=V * 1.02, w1=10, head="cut"):
-    """撇：粗起细收。head：cut（左高右低斜切、右角圆）、hid（藏进别的笔画）、round（圆头）。"""
-    seg = pie_seg(p0, p1, bend)
+def pie(p0, p1, bend=(0, 0), w0=None, w1=10, head="cut", seg=None):
+    """撇：粗起细收。head：cut（左高右低斜切、右角圆）、hid（藏进别的笔画）、round（圆头）。
+    seg 可以直接给中心线（竖撇这种先直后弯的用）。"""
+    w0 = V * 1.02 if w0 is None else w0
+    seg = pie_seg(p0, p1, bend) if seg is None else seg
     wf = _pie_width(w0, w1)
     d0 = _tan(seg, 0)
     a, b = _edge(seg, 0, wf, -1), _edge(seg, 0, wf, 1)     # 起笔的左上角、右下角
@@ -205,13 +225,15 @@ def pie(p0, p1, bend=(0, 0), w0=V * 1.02, w1=10, head="cut"):
                  n(*b, _ang(d0))]
         start = [start[1], start[2]]
         body = body + [n(*a, (_ang(d0) + 180) % 360, t=0.5523)]
-    else:
-        start = [n(*a, din=up0, hid=True), n(*b, dout=_edge_dir(seg, 0, wf, 1), hid=True)]
+    else:                                                   # hid：藏进别的笔画；flat：露在外面的平头
+        hid = head != "flat"
+        start = [n(*a, din=up0, hid=hid), n(*b, dout=_edge_dir(seg, 0, wf, 1), hid=hid)]
     return Shape(start + body, name="撇")
 
 
-def na(p0, p1, bend=(30, -10), wmax=V * 1.18, w0=30, foot=0.62):
+def na(p0, p1, bend=(30, -10), wmax=None, w0=30, foot=0.62, start="hid"):
     """捺：起笔藏进别的笔画（平头、hid），越写越粗，末端平出捺脚：上沿凹下去接到尖，底边平。"""
+    wmax = V * 1.18 if wmax is None else wmax
     c1 = (p0[0] + (p1[0] - p0[0]) * 0.3 + bend[0], p0[1] + (p1[1] - p0[1]) * 0.3 + bend[1])
     c2 = (p0[0] + (p1[0] - p0[0]) * 0.72 + bend[0] * .5, p0[1] + (p1[1] - p0[1]) * 0.8 + bend[1] * .5)
     seg = (p0, c1, c2, p1)
@@ -222,17 +244,24 @@ def na(p0, p1, bend=(30, -10), wmax=V * 1.18, w0=30, foot=0.62):
     tip = (max(up[0], bot[0]) + wmax * foot, bot[1] + 8)
     d_top = _edge_dir(seg, 0.86, wf, 1)
     s_l, s_r = _edge(seg, 0, wf, 1), _edge(seg, 0, wf, -1)
-    return Shape([n(*s_l, _edge_dir(seg, 0, wf, 1), hid=True)] + _side(seg, wf, (0.3, 0.6), 1) + [
+    if start == "tip":                                    # 尖头起笔：两条边在起点收成一个尖
+        d0 = _tan(seg, 0)
+        tp = (p0[0] - d0[0] * 6, p0[1] - d0[1] * 6)
+        head = [n(*tp, din=(_edge_dir(seg, 0.05, wf, -1) + 180) % 360, dout=_edge_dir(seg, 0.05, wf, 1), tip=True)]
+        tail = []
+    else:
+        head = [n(*s_l, _edge_dir(seg, 0, wf, 1), hid=True)]
+        tail = [n(*s_r, (_edge_dir(seg, 0, wf, -1) + 180) % 360, hid=True, t="line")]
+    return Shape(head + _side(seg, wf, (0.3, 0.6), 1) + [
         n(*top_end, d_top),
         n(*tip, din=sym_end(top_end, d_top, tip), dout=180, tip=True),
         n(bot[0] + 6, bot[1], 180),
-    ] + _side(seg, wf, (0.3, 0.64), -1) + [
-        n(*s_r, (_edge_dir(seg, 0, wf, -1) + 180) % 360, hid=True, t="line"),
-    ], name="捺")
+    ] + _side(seg, wf, (0.3, 0.64), -1) + tail, name="捺")
 
 
-def dian(p0, p1, w=V * 1.2):
+def dian(p0, p1, w=None):
     """点：尖头入笔，圆头收笔（对应西文的球形收笔）。"""
+    w = V * 1.2 if w is None else w
     d = _unit((p1[0] - p0[0], p1[1] - p0[1]))
     nl = (-d[1], d[0])
     r = w / 2
@@ -246,8 +275,9 @@ def dian(p0, p1, w=V * 1.2):
     ], name="点")
 
 
-def ti(p0, p1, w0=V * 1.08):
+def ti(p0, p1, w0=None):
     """提：圆头起笔，向右上挑出尖。"""
+    w0 = V * 1.08 if w0 is None else w0
     d = _unit((p1[0] - p0[0], p1[1] - p0[1]))
     nl = (-d[1], d[0])
     r = w0 / 2
@@ -291,14 +321,47 @@ def _inner_corner(seg, wf, y):
     return _edge(seg, t, wf, -1), (_edge_dir(seg, t, wf, -1) + 180) % 360
 
 
-def hengpie(x0, x1, y, p1, bend=(0, 0), w0=V * .98, entry=True):
+def hengpie(x0, x1, y, p1, bend=(0, 0), w0=None, entry=True):
     """横撇：横、肩、撇一条轮廓。肩的右侧顺着撇的外沿下去，撇的内沿在横的底边形成夹角。"""
+    w0 = V * .98 if w0 is None else w0
     seg, wf = _pie_part(x1, y, p1, bend, w0)
     ic, icd = _inner_corner(seg, wf, y - T)
     return Shape(heng_left(x0, y, entry) + [
         n(x1 - 104, y + T, R), n(x1 - 32, y + T + 14, R, t=0.62),
         n(*_edge(seg, 0.04, wf, 1), _edge_dir(seg, 0.04, wf, 1)),
     ] + _pie_body(seg, wf) + [n(*ic, din=icd)], name="横撇")
+
+
+def hengzhezhepie(x0, x1, y, p_mid, x2, p_end, w0=None, w2=None, bend1=(0, 0), bend2=(-20, 0), entry=True):
+    """横折折撇（辶 中间那一笔，像个「3」的上半截接一撇）：横、肩、撇、短横、肩、撇一条轮廓。
+    x1 是第一撇起笔处的右边沿，p_mid 是第一撇中心线的终点（要比短横底边再低一点），
+    短横的中线高度取 p_mid 上方 T + 20，x2 是第二撇起笔处的右边沿，p_end 是第二撇的尖。"""
+    w0 = V * .8 if w0 is None else w0
+    w2 = V * .86 if w2 is None else w2
+    seg1, wf1 = _pie_part(x1, y, p_mid, bend1, w0)
+    wf1 = _pie_width(w0, H * .7)
+    y2 = p_mid[1] + T + 20
+    seg2, wf2 = _pie_part(x2, y2, p_end, bend2, w2)
+    j0, j0d = _inner_corner(seg1, wf1, y - T)                         # 第一撇和上横底边的夹角
+    tj = _solve(lambda t: _edge(seg1, t, wf1, 1)[1], 0, 1, y2 + T)  # 第一撇外沿碰到短横顶边：凹角
+    tc = _solve(lambda t: _edge(seg1, t, wf1, -1)[1], 0, 1, y2 - T)  # 第一撇内沿碰到短横底边：左下的转角
+    j1, c = _edge(seg1, tj, wf1, 1), _edge(seg1, tc, wf1, -1)
+    j2, j2d = _inner_corner(seg2, wf2, y2 - T)
+    # 短横露出来的一截很短：肩只留一个微微隆起的点，太短就不要
+    bump = [n(x2 - 22, y2 + T + 4, R, t=0.6)] if x2 - 22 > j1[0] + 10 else []
+    return Shape(heng_left(x0, y, entry) + [
+        n(x1 - 104, y + T, R), n(x1 - 32, y + T + 14, R, t=0.62),
+        n(*_edge(seg1, 0.04, wf1, 1), _edge_dir(seg1, 0.04, wf1, 1)),
+        n(*_edge(seg1, tj * .5, wf1, 1), _edge_dir(seg1, tj * .5, wf1, 1)),
+        n(*j1, din=_edge_dir(seg1, tj, wf1, 1)),
+    ] + bump + [
+        n(*_edge(seg2, 0.04, wf2, 1), _edge_dir(seg2, 0.04, wf2, 1)),
+    ] + _pie_body(seg2, wf2) + [
+        n(*j2, din=j2d),
+        n(*c, dout=(_edge_dir(seg1, tc, wf1, -1) + 180) % 360, tip=True),   # 左边转折的尖
+        n(*_edge(seg1, tc * .5, wf1, -1), (_edge_dir(seg1, tc * .5, wf1, -1) + 180) % 360),
+        n(*j0, din=j0d),
+    ], name="横折折撇")
 
 
 def hook_down(x0, x1, y, entry=True):
@@ -314,9 +377,10 @@ def hook_down(x0, x1, y, entry=True):
     ], name="横钩")
 
 
-def hengpie_wangou(x0, x1, y, p1, x, yb, w0=V * .9, bow=16, dx=-120, dy=86):
+def hengpie_wangou(x0, x1, y, p1, x, yb, w0=None, bow=16, dx=-120, dy=86, entry=True):
     """「了」：横、肩、撇、弯钩一条轮廓。撇往左下走到竖的位置，竖从那里接着往下，底部出钩。
     x 是竖（弯钩）的中心，yb 是钩的底。"""
+    w0 = V * .9 if w0 is None else w0
     seg, wf = _pie_part(x1, y, p1, (0, 0), w0)
     ic, icd = _inner_corner(seg, wf, y - T)
     l, r = x - V / 2, x + V / 2
@@ -326,7 +390,7 @@ def hengpie_wangou(x0, x1, y, p1, x, yb, w0=V * .9, bow=16, dx=-120, dy=86):
     jr, jl = _edge(seg, tr, wf, 1), _edge(seg, tl, wf, -1)
     tip, bottom, join = (x + dx, yb + dy), (x + 4, yb - 14), (l, yb + 160)
     # 竖的两条边各是一整条弧：上端略往右、下端略往左，整支竖微微向右鼓
-    return Shape(heng_left(x0, y) + [
+    return Shape(heng_left(x0, y, entry) + [
         n(x1 - 104, y + T, R), n(x1 - 32, y + T + 14, R, t=0.62),
         n(*_edge(seg, 0.04, wf, 1), _edge_dir(seg, 0.04, wf, 1)),
         n(*_edge(seg, tr * .5, wf, 1), _edge_dir(seg, tr * .5, wf, 1)),
@@ -339,6 +403,180 @@ def hengpie_wangou(x0, x1, y, p1, x, yb, w0=V * .9, bow=16, dx=-120, dy=86):
         n(*_edge(seg, tl * .5, wf, -1), (_edge_dir(seg, tl * .5, wf, -1) + 180) % 360),
         n(*ic, din=icd),
     ], name="了")
+
+
+# ───────── 扩字用的笔形 ─────────
+
+def _lineint(a0, a1, b0, b1):
+    """两条直线（各用两点给出）的交点。"""
+    (x1, y1), (x2, y2), (x3, y3), (x4, y4) = a0, a1, b0, b1
+    d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+    a = x1 * y2 - y1 * x2
+    b = x3 * y4 - y3 * x4
+    return ((a * (x3 - x4) - (x1 - x2) * b) / d, (a * (y3 - y4) - (y1 - y2) * b) / d)
+
+
+def _off(p, nrm, k):
+    return (p[0] + nrm[0] * k, p[1] + nrm[1] * k)
+
+
+def shugou(x, y0, yb, top="head", dx=-110, dy=80):
+    """竖钩（亅、寸、小、可 里的那一笔）。"""
+    return Shape(shu_top(x, y0, top) + gou_end(x, yb, dx, dy), name="竖钩")
+
+
+def shuzhe(x, y0, yb, x1, top="head", right="flat"):
+    """竖折（山、出 的那一笔）：竖往下，在底部直角转向右成一横。yb 是那一横的中线，x1 是它的右端。"""
+    l, r = x - V / 2, x + V / 2
+    end = [n(x1, yb + T, hid=right == "hid"), n(x1, yb - T, hid=right == "hid", t="line")]
+    return Shape(shu_top(x, y0, top) + [n(r, yb + T)] + end + [n(l + 10, yb - T), n(l, yb - T + 14, t="line")],
+                 name="竖折")
+
+
+def shuwangou(x, y0, yb, x1, top="head", hook=74, r_in=64, wb=None):
+    """竖弯钩（也、乚、儿 的那一笔）：竖往下，圆转向右成一条底横，末端向上挑出钩。yb 是底横的底边。"""
+    wb = H * 1.3 if wb is None else wb
+    l, r = x - V / 2, x + V / 2
+    ty = yb + wb
+    tip = (x1 - 8, ty + hook)
+    a = (x1 - 44, ty)
+    b = (x1 + 6, yb + 12)
+    return Shape(shu_top(x, y0, top) + [
+        n(r, ty + r_in, D),                                    # 右边沿往下，开始转弯
+        n(r + r_in, ty, R, t="line"),                          # 转成底横的上沿
+        n(*a, R),
+        n(*tip, din=74, dout=sym_start(tip, b, 270), tip=True),
+        n(*b, D),
+        n(x1 - 24, yb, L, t="line"),
+        n(l + 84, yb, L),
+        n(l, yb + 84, U, t="line"),
+    ], name="竖弯钩")
+
+
+def wogou(x0, y0, xb, yb, x1, y1, wb=None, lean=290):
+    """卧钩（心 的那一笔）：左上细起，先往下、再兜到右边，底部最粗，右端向左上挑出钩。
+    (x0, y0) 起笔尖；yb 是弧的外沿最低处，xb 是那一点的 x；(x1, y1) 是右端外沿。"""
+    wb = V * 0.92 if wb is None else wb
+    ym = (y0 + yb) / 2
+    s0 = (x0, y0)
+    lx = x0 + (xb - x0) * 0.32
+    il = (lx + 34, ym, lean)                                   # 内沿左（往右下走）
+    ib = (xb + 40, yb + wb)                                    # 内沿最低处
+    root = (x1 - 66, y1 + 34)                                  # 钩根（内侧夹角）
+    hk = (x1 - 92, y1 + 118)                                   # 钩尖
+    o1 = (x1 + 6, y1 - 6)                                      # 右端外沿
+    ob = (xb, yb)                                              # 外沿最低处
+    ol = (lx - 30, ym - 30)                                    # 外沿左
+    return Shape([
+        n(*s0, din=sym_end(ol, (lean + 180) % 360, s0), dout=sym_start(s0, il[:2], il[2]), tip=True),
+        n(*il[:2], il[2]),
+        n(*ib, R),
+        n(*root, din=sym_end(ib, 0, root), dout=118),
+        n(*hk, din=118, dout=sym_start(hk, o1, 270), tip=True),
+        n(*o1, D, t=0.6),
+        n(*ob, L, t=0.6),
+        n(*ol, (lean + 180) % 360),
+    ], name="卧钩")
+
+
+def piezhe(p0, p1, p2, w=None, head="cut"):
+    """撇折（厶、纟、云 的那一笔）：撇往左下到 p1，折回成提往右上，到 p2 收尖。"""
+    w = V * 0.8 if w is None else w
+    d1 = _unit((p1[0] - p0[0], p1[1] - p0[1]))
+    n1 = (-d1[1], d1[0])                                       # 撇的左手边（屏幕右下）
+    d2 = _unit((p2[0] - p1[0], p2[1] - p1[1]))
+    n2 = (-d2[1], d2[0])                                       # 提的左手边（屏幕左上）
+    a0, a1 = _off(p0, n1, w / 2), _off(p1, n1, w / 2)          # 撇右下沿
+    b0, b1 = _off(p0, n1, -w / 2), _off(p1, n1, -w / 2)        # 撇左上沿
+    c0 = _off(p1, n2, w / 2)                                   # 提上沿起点
+    e0 = _off(p1, n2, -w / 2)                                  # 提下沿起点
+    ic = _lineint(a0, a1, c0, p2)                              # 里面的夹角
+    oc = _lineint(b0, b1, e0, p2)                              # 外面的尖角
+    top = [n(b0[0], b0[1] + (8 if head == "cut" else 0), hid=head == "hid"), n(*a0, hid=head == "hid")]
+    return Shape(top + [n(*ic), n(*p2, tip=True), n(*oc, tip=True)], name="撇折")
+
+
+def piedian(p0, p1, p2, w=None, wd=None):
+    """撇点（女 的第一笔）：撇往左下到 p1，折回成点往右下到 p2，点的末端是圆头。"""
+    w = V * 0.82 if w is None else w
+    wd = V * 1.08 if wd is None else wd
+    d1 = _unit((p1[0] - p0[0], p1[1] - p0[1]))
+    n1 = (-d1[1], d1[0])
+    d2 = _unit((p2[0] - p1[0], p2[1] - p1[1]))
+    n2 = (-d2[1], d2[0])                                       # 点的左手边（屏幕右上）
+    a0, a1 = _off(p0, n1, w / 2), _off(p1, n1, w / 2)
+    b0, b1 = _off(p0, n1, -w / 2), _off(p1, n1, -w / 2)
+    cu0, cu1 = _off(p1, n2, w / 2), _off(p2, n2, wd / 2)       # 点的上沿
+    cl0, cl1 = _off(p1, n2, -w / 2), _off(p2, n2, -wd / 2)     # 点的下沿
+    ic = _lineint(a0, a1, cu0, cu1)
+    oc = _lineint(b0, b1, cl0, cl1)
+    da = _ang(d2)
+    far = _off(p2, d2, wd / 2)
+    return Shape([
+        n(b0[0], b0[1] + 8), n(*a0), n(*ic),
+        n(*cu1, da, t=0.5523), n(*far, (da - 90) % 360, t=0.5523), n(*cl1, (da + 180) % 360, t="line"),
+        n(*oc, tip=True),
+    ], name="撇点")
+
+
+def hengzheti(x0, x1, y, yb, p2, entry=True):
+    """横折提（讠 的第二笔）：短横、肩、竖往下，底部折成提往右上收尖。x1 是竖的右边沿，yb 是竖的底（提的起点）。"""
+    l = x1 - V
+    oc = (l, yb - V * 0.22)                                    # 竖的左下角，提的下沿从这里出发
+    k = (p2[1] - oc[1]) / (p2[0] - oc[0])                      # 提下沿的斜率
+    ic = (x1, oc[1] + V * k + V * 0.62)                        # 竖右边沿和提上沿的夹角：留出提根部的厚度
+    return Shape(heng_left(x0, y, entry) + shoulder(x1, y) + [n(*ic), n(*p2, tip=True), n(*oc, tip=True), n(l, y - T)],
+                 name="横折提")
+
+
+def hengzhe_heng(x0, x1, y, y2, x2, entry=True):
+    """横折再往左折成一横（己、已、巳 的上半，像一个开口朝左的「コ」）：一条轮廓。
+    x1 是竖的右边沿，y2 是下面那一横的中线，x2 是它的左端。"""
+    l = x1 - V
+    return Shape(heng_left(x0, y, entry) + shoulder(x1, y) + [
+        n(x1, y2 - T), n(x2, y2 - T), n(x2, y2 + T), n(l, y2 + T), n(l, y - T),
+    ], name="横折横")
+
+
+def shupie_hengzhegou(x, y, x1, yb, x_tail, y_tail, w0=None, dx=-110, dy=80, bars=()):
+    """月、用 的外框：左边的竖撇和上面的横折钩画成一条轮廓。x 是竖撇顶部中线，y 是顶上那一横的中线，
+    x1 是右边竖的右边沿，yb 是钩的底，(x_tail, y_tail) 是竖撇的尾尖。
+
+    bars 是框里短横的中线高度（从上往下）。短横也并进这条轮廓，横与横之间的空当挖成字怀：
+    系统渲染（CoreText）遇到一笔被另一条轮廓两头穿过时，会把重叠处画成镂空，所以框里的横不能叠着画。"""
+    w0 = V if w0 is None else w0
+    top = y + T
+    seg = ((x, top), (x, top - (top - y_tail) * 0.55), (x - 6, y_tail + (top - y_tail) * 0.16), (x_tail, y_tail))
+    wf = _pie_width(w0, 10)
+    tip = _bz(seg, 1)
+    td = _tan(seg, 1)
+    tip = (tip[0] + td[0] * 3, tip[1] + td[1] * 3)
+    xi = x1 - V                                   # 右边竖的内沿
+    down = lambda t: _edge_dir(seg, t, wf, 1)     # 竖撇右边沿往下走的方向
+    at = lambda yy: _solve(lambda t: _edge(seg, t, wf, 1)[1], 0, 0.95, yy)
+    # 竖撇左边沿（往上走）、右边沿（往下走）；右边沿从最下面那一横的底边开始
+    left = [n(*_edge(seg, t, wf, -1), (_edge_dir(seg, t, wf, -1) + 180) % 360) for t in (0.7, 0.36)]
+    ylo = bars[-1] - H / 2 if bars else y - T
+    t0 = at(ylo)
+    right = [n(*_edge(seg, t, wf, 1), down(t)) for t in (0.36, 0.7) if t > t0 + 0.04]
+    xv = x1 - V / 2
+    outer = Shape([n(*tip, din=_edge_dir(seg, 0.97, wf, 1), dout=(_edge_dir(seg, 0.97, wf, -1) + 180) % 360, tip=True)]
+                  + left + [n(x - w0 / 2, top, din=90)] + shoulder(x1, y) + gou_end(xv, yb, dx, dy)
+                  + [n(xi, ylo), n(*_edge(seg, t0, wf, 1), dout=down(t0))] + right,
+                  name="竖撇横折钩")
+    holes = []
+    uppers = [y - T] + [b - H / 2 for b in bars[:-1]]
+    for ya, b in zip(uppers, bars):
+        ta, tb = at(ya), at(b + H / 2)
+        holes.append(Shape([n(xi, ya), n(xi, b + H / 2), n(*_edge(seg, tb, wf, 1), dout=(down(tb) + 180) % 360),
+                            n(*_edge(seg, ta, wf, 1), din=(down(ta) + 180) % 360)], hole=True, name="字怀"))
+    return [outer] + holes
+
+
+def shupie(x, y0, x1, y1, w0=None, head="flat"):
+    """竖撇（月、用、几 的左边那一笔）：先直着往下，再弯向左下收尖。"""
+    seg = ((x, y0), (x, y0 - (y0 - y1) * 0.55), (x - 6, y1 + (y0 - y1) * 0.16), (x1, y1))
+    return pie((x, y0), (x1, y1), w0=V if w0 is None else w0, head=head, seg=seg)
 
 
 # ───────── 字 ─────────
@@ -369,8 +607,9 @@ def c_zhong():                 # 中
     return _kou(170, 830, 610, 220) + [shu(500, 852, -80, end="needle")]
 
 
-def _pie_na(pie_p0, pie_p1, bend, na_y, na_p1, na_bend=(30, -10), w0=V * 1.1, wmax=V * 1.18, head="cut"):
+def _pie_na(pie_p0, pie_p1, bend, na_y, na_p1, na_bend=(30, -10), w0=None, wmax=None, head="cut"):
     """撇 + 从撇身中间起笔的捺（人、大、天、美的下半部）。"""
+    w0 = V * 1.1 if w0 is None else w0
     start = on_pie(pie_p0, pie_p1, bend, na_y)
     return [pie(pie_p0, pie_p1, bend=bend, w0=w0, head=head), na(start, na_p1, bend=na_bend, wmax=wmax)]
 

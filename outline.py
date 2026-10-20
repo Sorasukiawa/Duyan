@@ -84,7 +84,9 @@ class Shape:
         pts = []
         for seg in self.segments():
             if seg[0] == "line":
-                pts.append(seg[1])
+                p0, p1 = seg[1], seg[2]
+                m = max(1, int(math.dist(p0, p1) / step))          # 直线也细分，检查交叉、间距时才不会漏
+                pts += [(p0[0] + (p1[0] - p0[0]) * i / m, p0[1] + (p1[1] - p0[1]) * i / m) for i in range(m)]
             else:
                 _, p0, h1, h2, p1 = seg
                 length = math.dist(p0, h1) + math.dist(h1, h2) + math.dist(h2, p1)
