@@ -33,6 +33,14 @@ class Map:
     def v(self, vec):
         return (vec[0] * self.ax, vec[1] * self.ay)
 
+    def into(self, dst, src=FULL):
+        """先从 src 放进 dst，再按自己映射：部件里套部件（化 里的 亻）时用。"""
+        inner = Map(src, dst)
+        m = Map()
+        m.ax, m.ay = self.ax * inner.ax, self.ay * inner.ay
+        m.bx, m.by = self.ax * inner.bx + self.bx, self.ay * inner.by + self.by
+        return m
+
     @property
     def k(self):
         """点、钩这类「有大小」的东西跟着缩放的比例：缩得少一点。"""
@@ -122,13 +130,13 @@ def ren_left(m=ID, vt=640):
 def shui(m=ID):
     """氵"""
     return [D_(m, (85, 790), (180, 705), w=han.V * 1.05), D_(m, (65, 570), (155, 485), w=han.V * 1.05),
-            T_(m, (74, 70), (216, 325), w0=han.V)]
+            T_(m, (88, 70), (226, 325), w0=han.V)]
 
 
 def shou(m=ID):
     """扌"""
     return [H_(m, 40, 300, 590, beak=0.5), SG_(m, 170, 862, -40, dx=-86, dy=70),
-            T_(m, (72, 200), (310, 400), w0=han.V * 0.92)]
+            T_(m, (86, 200), (316, 400), w0=han.V * 0.92)]
 
 
 def yan_left(m=ID):
@@ -145,17 +153,17 @@ def xin_left(m=ID):
 
 def si_left(m=ID):
     """纟"""
-    return [piezhe(m.p((214, 870)), m.p((120, 660)), m.p((266, 708)), w=han.V * 0.74),   # 提的尖藏进第二笔的头里
-            piezhe(m.p((280, 706)), m.p((112, 330)), m.p((300, 430)), w=han.V * 0.78),
-            T_(m, (104, 110), (318, 290), w0=han.V * 0.9)]
+    return [piezhe(m.p((236, 880)), m.p((128, 700)), m.p((292, 734)), w=han.V * 0.74),   # 提的尖藏进第二笔的头里
+            piezhe(m.p((304, 728)), m.p((124, 420)), m.p((342, 468)), w=han.V * 0.78),
+            T_(m, (110, 150), (348, 236), w0=han.V * 0.9)]
 
 
 def fu_left(m=ID):
     """阝（左耳刀）：左边一竖，右上一个「3」形的横撇弯钩。"""
     return [S_(m, 104, 872, -70, top="flat", end="dew"),
-            HP_(m, 104, 290, 820, (150, 620), bend=(-10, 0), w0=han.V * 0.86, entry=None),
-            pie(m.p((116, 630)), m.p((126, 290)), w0=han.V * 0.92, head="hid",
-                seg=(m.p((116, 630)), m.p((370, 580)), m.p((350, 360)), m.p((126, 290))))]
+            HP_(m, 104, 280, 820, (150, 620), bend=(-10, 0), w0=han.V * 0.74, entry=None),
+            pie(m.p((116, 630)), m.p((126, 290)), w0=han.V * 0.8, head="hid",
+                seg=(m.p((116, 630)), m.p((350, 580)), m.p((330, 360)), m.p((126, 290))))]
 
 
 def nv_left(m=ID):
@@ -196,7 +204,7 @@ def kou_left(m=ID):
 
 def yue_left(m=ID):
     """月（左偏旁）：窄。"""
-    return shupie_hengzhegou(m.x(110), m.y(800), m.x(312) + han.V / 2, m.y(-40), m.x(30), m.y(-60),
+    return shupie_hengzhegou(m.x(110), m.y(800), m.x(312) + han.V / 2, m.y(-40), m.x(46), m.y(-60),
                              w0=han.V * 0.96, dx=-70 * m.k, dy=60 * m.k, bars=(m.y(540), m.y(300)))
 
 
@@ -323,7 +331,7 @@ def yuan(m=ID):
 
 def bi(m=ID):
     """匕（它、化 的右下）"""
-    return [P_(m, (700, 640), (200, 380), w0=han.V * 0.9), SWG_(m, 270, 800, -30, 900)]
+    return [P_(m, (720, 680), (170, 340), w0=han.V * 0.9), SWG_(m, 270, 800, -30, 900)]
 
 
 def gu(m=ID):
@@ -365,9 +373,9 @@ def kou(m=ID):
 
 def ren(m=ID):
     """人"""
-    start = on_pie(m.p((525, 840)), m.p((70, -50)), m.v((-20, -20)), m.y(540))
-    return [P_(m, (525, 840), (70, -50), bend=(-20, -20), w0=han.V * 1.1),
-            na(start, m.p((806, -10)), m.v((30, -10)), wmax=han.V * 1.18 * (0.8 + 0.2 * m.k))]
+    start = on_pie(m.p((540, 860)), m.p((40, -60)), m.v((-30, -50)), m.y(520))
+    return [P_(m, (540, 860), (40, -60), bend=(-30, -50), w0=han.V * 1.2),
+            na(start, m.p((790, -20)), m.v((20, -20)), wmax=han.V * 1.35 * (0.8 + 0.2 * m.k), foot=0.7)]
 
 
 def da(m=ID):
@@ -410,8 +418,8 @@ def sheng(m=ID):
 
 def hua(m=ID):
     """化：亻 + 匕"""
-    return ren_left(into((60, -70, 330, 880), (40, -70, 300, 880)), vt=600) + \
-        [P_(m, (800, 650), (430, 420), w0=han.V * 0.9), SWG_(m, 470, 860, -30, 920)]
+    return ren_left(m.into((60, -70, 330, 880), (40, -70, 300, 880)), vt=600) + \
+        [P_(m, (820, 690), (380, 360), w0=han.V * 0.9), SWG_(m, 470, 860, -30, 920)]
 
 
 # ───────── 头和底 ─────────
@@ -441,4 +449,4 @@ def zou(m=ID):
     return [D_(m, (150, 836), (226, 740), w=han.V * 1.0),
             hengzhezhepie(m.x(56), m.x(250), m.y(590), m.p((70, 420)), m.x(244), m.p((62, 176)),
                           w0=han.V * 0.8, w2=han.V * 0.86, bend2=m.v((-10, 10))),
-            na(m.p((88, 212)), m.p((932, -40)), m.v((-150, -110)), wmax=han.V * 1.12, w0=34, foot=0.42, start="tip")]
+            na(m.p((88, 212)), m.p((918, -40)), m.v((-150, -110)), wmax=han.V * 1.12, w0=34, foot=0.42, start="tip")]

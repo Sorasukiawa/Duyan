@@ -4,6 +4,7 @@
 笔画越多的字整体越细一点（weight），压窄的部件才不会显得太黑。
 """
 import han
+import layout
 from han import dian, heng, hengpie, hengpie_wangou, hengzhegou, pie, shu, weight
 from parts import (ID, H_, HP_, INNER_, KOU_, P_, S_, SG_, SWG_, D_, HZ_, into, ben, bi, cao, cun, da, er, fu_left,
                    gan, gong, gu, he_left, hua, ke, kou, li, men, mian, mu, mu_box, mu_left, nv_left, piezhe, qu,
@@ -121,7 +122,7 @@ def c_quan():                  # 全
 
 def c_hui():                   # 会
     return _w(0.94, lambda: ren_top(into((70, 300, 930, 900))) + [heng(290, 710, 500, beak=0.5), heng(80, 920, 320),
-                                         piezhe((440, 296), (220, -40), (660, 36)), dian((646, 200), (836, -20))])
+                                         piezhe((440, 296), (226, -22), (660, 44)), dian((646, 200), (836, -20))])
 
 
 def c_you_friend():            # 友
@@ -136,9 +137,24 @@ def c_zhi():                   # 只
 
 # ───────── 左右结构 ─────────
 
-def lr(left, right, rbox, k=0.92):
+def _tag(shapes, part):
+    for s in shapes:
+        s.part = part              # 结构检查用：哪一笔属于哪个部件
+    return shapes
+
+
+_DEFAULT = object()
+
+
+def lr(left, right, rbox, k=0.92, gap=_DEFAULT, lsx=1.0):
+    """左右结构：右边部件放进 rbox。gap 不是 None 时，rbox 的左边沿按两部件间距自动摆（见 layout.py）。
+    lsx < 1 时左偏旁以左边沿为准横向收窄（左边太重的字用）。"""
+    if gap is _DEFAULT:
+        gap = layout.LR_GAP_BY_LEFT.get(left.__name__, layout.LR_GAP)
     with weight(k):
-        return left(ID) + right(into(rbox))
+        L = _tag(left(ID if lsx == 1 else into((40, -70, 40 + 300 * lsx, 880), (40, -70, 340, 880))), "左")
+        R = right(into(rbox)) if gap is None else layout.fit(L, lambda b: right(into(b)), rbox, "right", gap)[0]
+        return L + _tag(R, "右")
 
 
 def c_ta():                    # 他
@@ -162,7 +178,7 @@ def c_shen_what():             # 什
 
 
 def c_ti():                    # 体
-    return lr(ren_left, ben, (310, -70, 930, 880), 0.9)
+    return lr(ren_left, ben, (310, -70, 915, 880), 0.9)
 
 
 def c_jiang():                 # 江
@@ -212,7 +228,7 @@ def c_shi_time():              # 时
 
 
 def c_lin():                   # 林
-    return lr(mu_left, mu, (370, -70, 925, 880), 0.9)
+    return lr(mu_left, mu, (370, -70, 905, 880), 0.9)
 
 
 def c_cun():                   # 村
@@ -228,7 +244,7 @@ def c_peng():                  # 朋
 
 
 def c_hong():                  # 红
-    return lr(si_left, gong, (370, 60, 930, 740))
+    return lr(si_left, gong, (370, 20, 930, 790))
 
 
 def c_yang():                  # 阳
@@ -236,7 +252,7 @@ def c_yang():                  # 阳
 
 
 def c_dui_team():              # 队
-    return lr(fu_left, ren, (380, -60, 945, 820))
+    return lr(fu_left, ren, (380, -70, 935, 860))
 
 
 def c_da_hit():                # 打
@@ -244,7 +260,7 @@ def c_da_hit():                # 打
 
 
 def c_ren_know():              # 认
-    return lr(yan_left, ren, (340, -60, 945, 840))
+    return lr(yan_left, ren, (340, -60, 928, 840))
 
 
 def c_rang():                  # 让
@@ -272,14 +288,23 @@ def c_dui():                   # 对
 
 
 def c_shuang():                # 双
-    return lr(you_left, you, (390, -60, 940, 800))
+    return lr(you_left, you, (390, -60, 926, 800))
 
 
 # ───────── 上下、半包围 ─────────
 
-def tb(top, bottom, bbox, k=0.92, tbox=None):
+def bao(outer, inner, box, k=0.92):
+    """半包围（辶）：里面的部件放进 box，位置手摆。"""
     with weight(k):
-        return top(ID if tbox is None else into(tbox)) + bottom(into(bbox))
+        return _tag(outer(ID), "外") + _tag(inner(into(box)), "内")
+
+
+def tb(top, bottom, bbox, k=0.92, tbox=None, gap=layout.TB_GAP):
+    """上下结构：下面部件放进 bbox。gap 不是 None 时，bbox 的上边沿按两部件间距自动摆。"""
+    with weight(k):
+        T = _tag(top(ID if tbox is None else into(tbox)), "上")
+        B = bottom(into(bbox)) if gap is None else layout.fit(T, lambda b: bottom(into(b)), bbox, "bottom", gap)[0]
+        return T + _tag(B, "下")
 
 
 def c_an():                    # 安
@@ -334,23 +359,23 @@ def c_wang_forget():           # 忘
 
 
 def c_zhe():                   # 这
-    return tb(zou, wen, (330, 210, 930, 930), 0.92)
+    return bao(zou, wen, (330, 210, 914, 930))
 
 
 def c_guo():                   # 过
-    return tb(zou, cun, (340, 150, 920, 880), 0.92)
+    return bao(zou, cun, (340, 150, 920, 880))
 
 
 def c_da_reach():              # 达
-    return tb(zou, da, (320, 220, 930, 890), 0.92)
+    return bao(zou, da, (320, 220, 918, 890))
 
 
 def c_bian():                  # 边
-    return tb(zou, li, (340, 210, 920, 890), 0.92)
+    return bao(zou, li, (340, 210, 920, 890))
 
 
 def c_yuan_far():              # 远
-    return tb(zou, yuan, (320, 210, 930, 870), 0.92)
+    return bao(zou, yuan, (320, 210, 930, 870))
 
 
 GLYPHS = {
