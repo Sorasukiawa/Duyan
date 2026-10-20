@@ -16,6 +16,7 @@
 - `chars.py`：用部件拼出来的常用字（第一批 86 个），`lr()`、`tb()` 是左右、上下结构的拼法。
 - `glyphs.py`：把字收集起来摆好位置。
 - `build.py`：先检查，再装配成 `sample/Duyan-Sample.otf`（CFF，直接存三次曲线）。`--strict` 时有问题就不出字体。
+- `tools/brand.py`：用字体自己的轮廓生成文字标、单字图标和封面（`brand/`）。
 - `sample/index.html`：小样展示页（`python3 -m http.server 8766` 后打开 http://localhost:8766/sample/）。
 
 ## 检查
