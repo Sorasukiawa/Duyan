@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""把 glyphs.collect() 里的轮廓装配成小样字体 sample/Xiaoke-Sample.otf（CFF，直接存三次曲线）。
+"""把 glyphs.collect() 里的轮廓装配成小样字体 sample/Duyan-Sample.otf（CFF，直接存三次曲线）。
 
 装配前先跑一遍 tools/check.py（轮廓）和 tools/structure.py（结构，规范见 docs/STRUCTURE.md）：
 有问题就列出来；加 --strict 时有问题就不出字体。
@@ -79,14 +79,14 @@ def main():
             s.draw(bp)
         charstrings[name] = pen.getCharString()
         metrics[name] = (adv, round(bp.bounds[0]) if bp.bounds else 0)
-    fb.setupCFF("XiaokeSample-Regular", {"FullName": "Xiaoke Sample Regular"}, charstrings, {})
+    fb.setupCFF("DuyanSample-Regular", {"FullName": "Duyan Sample Regular"}, charstrings, {})
     fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=1000, descent=-280)
-    fb.setupNameTable({"familyName": {"en": "Xiaoke Sample", "zh": "小克体 小样"}, "styleName": "Regular",
-                       "fullName": {"en": "Xiaoke Sample Regular", "zh": "小克体 小样 Regular"},
-                       "psName": "XiaokeSample-Regular",
+    fb.setupNameTable({"familyName": {"en": "Duyan Sample", "zh": "渡言 小样"}, "styleName": "Regular",
+                       "fullName": {"en": "Duyan Sample Regular", "zh": "渡言 小样 Regular"},
+                       "psName": "DuyanSample-Regular",
                        "version": "Version 0.007",
-                       "copyright": "Copyright 2026 The Xiaoke Project Authors (https://github.com/Sorasukiawa/Duyan)",
+                       "copyright": "Copyright 2026 The Duyan Project Authors (https://github.com/Sorasukiawa/Duyan)",
                        "designer": "Sora", "vendorURL": "https://github.com/Sorasukiawa/Duyan",
                        "licenseDescription": "This Font Software is licensed under the SIL Open Font License, Version 1.1. "
                                              "This license is available with a FAQ at: https://openfontlicense.org",
@@ -97,7 +97,7 @@ def main():
     fb.setupPost()
     fea, kerned = kern_feature(table)
     fb.addOpenTypeFeatures(fea)
-    out = os.path.join(HERE, "sample", "Xiaoke-Sample.otf")
+    out = os.path.join(HERE, "sample", "Duyan-Sample.otf")
     fb.save(out)
     print("已生成", os.path.relpath(out, HERE), len(table), "个字", f"{kerned} 个字距对", f"（检查出 {problems} 处问题）")
     import render_check
