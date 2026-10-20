@@ -2,11 +2,13 @@
 
 # 渡言 Duyan
 
+**简体中文** · [English](README.en.md)
+
 **一字一言。** 一款从零自绘的中英文衬线字体，正在造字中。
 
 西文是温和、有书卷气的衬线，汉字用同一支笔来写：竖粗横细，点是圆圆的水滴，横画末端带一个圆润的喙。汉字还在一个字一个字地补齐、打磨。名字里的「渡」，是在中文和英文之间摆渡。所有字形都从零画出，没有使用任何现成字体的轮廓。
 
-[设计与造字方式](docs/DESIGN.md) · [汉字结构规范](docs/STRUCTURE.md) · [English](#english)
+[设计与造字方式](docs/DESIGN.md) · [汉字结构规范](docs/STRUCTURE.md)
 
 ## 进度
 
@@ -54,7 +56,7 @@ pip3 install -r requirements.txt
 python3 build.py
 ```
 
-`build.py` 先按设计意图检查每个字（该藏起来的端点有没有露头、轮廓有没有打结、两笔之间有没有窄缝……），再生成 `sample/Duyan-Sample.otf`；在 macOS 上还会核对系统渲染。检查规则和造字方式见 [docs/DESIGN.md](docs/DESIGN.md)。
+`build.py` 先按设计意图检查每个字（该藏起来的端点有没有露头、轮廓有没有打结、两笔之间有没有窄缝、汉字的结构和间距……），再生成 `sample/Duyan-Sample.otf`；在 macOS 上还会核对系统渲染。检查规则和造字方式见 [docs/DESIGN.md](docs/DESIGN.md) 和 [docs/STRUCTURE.md](docs/STRUCTURE.md)。
 
 ## 反馈
 
@@ -63,9 +65,3 @@ python3 build.py
 ## 授权
 
 渡言采用 [SIL Open Font License 1.1](OFL.txt)：可以免费使用（包括商用）、嵌入网页和文档、修改和再分发；改出来的字体也要继续用 OFL，并且不能把字体文件单独拿去卖。造字代码和构建脚本属于字体的源文件，同样按 OFL 授权。
-
-## English
-
-Duyan (渡言, "words that ferry across") is a serif typeface for Chinese and Latin, drawn from scratch with code. The Latin is a calm, bookish serif; the Chinese is written with the same pen and is still growing, one character at a time: heavy verticals and light horizontals, round teardrop dots, a soft beak at the end of each horizontal. No outlines from existing fonts are used.
-
-It is an early work in progress (v0.7): basic Latin letters, figures and punctuation with kerning, and the first 106 Chinese characters. Build it with `pip3 install -r requirements.txt` and `python3 build.py`. Logo, icon and cover live in [`brand/`](brand/), generated from the font's own outlines. Licensed under the [SIL Open Font License 1.1](OFL.txt).
