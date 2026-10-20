@@ -89,8 +89,9 @@ def main():
                        "licenseDescription": "This Font Software is licensed under the SIL Open Font License, Version 1.1. "
                                              "This license is available with a FAQ at: https://openfontlicense.org",
                        "licenseInfoURL": "https://openfontlicense.org"})
+    # fsType 0：可安装嵌入。开源字体不限制嵌入（fontTools 默认是 4，「只许预览和打印」，浏览器存 PDF 时会把字转成图形）
     fb.setupOS2(sTypoAscender=880, sTypoDescender=-120, sTypoLineGap=0, usWinAscent=1000, usWinDescent=280,
-                sxHeight=540, sCapHeight=720, achVendID="NONE")
+                sxHeight=540, sCapHeight=720, achVendID="NONE", fsType=0)
     fb.setupPost()
     fea, kerned = kern_feature(table)
     fb.addOpenTypeFeatures(fea)

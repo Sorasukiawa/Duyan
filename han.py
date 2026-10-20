@@ -582,11 +582,11 @@ def shupie(x, y0, x1, y1, w0=None, head="flat"):
 # ───────── 字 ─────────
 
 def c_yi():                    # 一
-    return [heng(100, 900, 380)]
+    return [heng(56, 944, 380)]
 
 
 def c_shi():                   # 十
-    return [heng(90, 910, 440), shu(500, 812, -66, end="needle")]
+    return [heng(62, 938, 440), shu(500, 812, -66, end="needle")]
 
 
 def _kou(xl, xr, yt, yb, foot=44):
@@ -596,11 +596,11 @@ def _kou(xl, xr, yt, yb, foot=44):
 
 
 def c_kou():                   # 口
-    return _kou(230, 770, 660, 110)
+    return _kou(222, 778, 716, 22)
 
 
 def c_ri():                    # 日
-    return _kou(280, 720, 760, 10) + [heng(280, 720, 390, beak=False, entry=None, right_hid=True)]
+    return _kou(258, 742, 770, 0) + [heng(258, 742, 390, beak=False, entry=None, right_hid=True)]
 
 
 def c_zhong():                 # 中
@@ -619,22 +619,22 @@ def c_ren():                   # 人
 
 
 def c_da():                    # 大
-    return [heng(80, 920, 530)] + _pie_na((505, 860), (70, -50), (10, -90), 470, (850, -10))
+    return [heng(56, 944, 530)] + _pie_na((505, 860), (70, -50), (10, -90), 470, (850, -10))
 
 
 def c_tian():                  # 天
-    return [heng(190, 810, 720), heng(80, 920, 450)] + _pie_na((505, 722), (75, -50), (10, -70), 400, (850, -10),
+    return [heng(190, 810, 720), heng(56, 944, 450)] + _pie_na((505, 722), (75, -50), (10, -70), 400, (850, -10),
                                                                w0=V * 1.08, head="hid")
 
 
 def c_wen():                   # 文
-    return [dian((460, 890), (540, 795)), heng(80, 920, 660),
+    return [dian((460, 890), (540, 795)), heng(56, 944, 660),
             pie((715, 660), (70, -50), bend=(-70, 40), w0=V * 1.08, head="hid"),
             na((305, 655), (842, -10), bend=(70, 10))]
 
 
 def c_yan():                   # 言
-    return [dian((455, 905), (540, 835)), heng(80, 920, 705), heng(210, 790, 565, beak=0.7), heng(210, 790, 430, beak=0.7)] \
+    return [dian((455, 905), (540, 835)), heng(56, 944, 705), heng(210, 790, 565, beak=0.7), heng(210, 790, 430, beak=0.7)] \
         + _kou(255, 745, 280, -20)
 
 
@@ -651,14 +651,14 @@ def c_zi():                    # 字
             dian((150, 770), (170, 640), w=V * 1.05),
             hook_down(170, 870, 705, entry=None),
             hengpie_wangou(250, 744, 545, (430, 380), 505, 30),
-            heng(80, 920, 290)]
+            heng(56, 944, 290)]
 
 
 def c_mei():                   # 美
     return [dian((290, 905), (345, 832)), pie((722, 905), (652, 805), w0=V * .95, head="round"),
             heng(220, 780, 695), heng(250, 750, 590, beak=0.3), shu(500, 695, 480, top="hid", end="hid"),
             heng(140, 860, 480, beak=0.3),
-            heng(80, 920, 330)] + _pie_na((505, 482), (70, -55), (10, -50), 280, (850, -15), w0=V * 1.05, head="hid")
+            heng(56, 944, 330)] + _pie_na((505, 482), (70, -55), (10, -50), 280, (850, -15), w0=V * 1.05, head="hid")
 
 
 def c_du():                    # 渡
