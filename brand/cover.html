@@ -2,41 +2,43 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>渡言封面</title>
+<title>小克体封面</title>
 <style>
-  /* 封面上只用渡言已经有的字；tools/brand.py 出图前会核对 */
-  @font-face { font-family: DY; src: url("../sample/Duyan-Sample.otf") format("opentype"); }
-  :root { --ink: #1D1C1A; --paper: #F4F1EA; --accent: #21505C; --muted: #6F6A60; --line: #DED8CC; }
+  /* 封面上只用小克体已经有的字；tools/brand.py 出图前会核对 */
+  @font-face { font-family: XK; src: url("../sample/Xiaoke-Sample.otf") format("opentype"); }
+  :root { --ink: #1D1C1A; --paper: #F4F1EA; --accent: #21505C; --grid: #9DB3B8; --muted: #6F6A60; --line: #DED8CC; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; width: 1280px; height: 640px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: DY; }
-  .page { position: relative; width: 1280px; height: 640px; padding: 64px 80px; }
-  .meta { font-size: 15px; letter-spacing: .2em; color: var(--muted); }
-  h1 { font-weight: 400; font-size: 118px; line-height: 1; margin: 40px 0 0; font-kerning: normal; }
-  h1 span { color: var(--accent); margin-left: .26em; }
-  .lead { font-size: 36px; margin: 34px 0 0; }
-  .lead-en { font-size: 26px; margin: 10px 0 0; color: var(--muted); }
-  .big { position: absolute; right: 84px; top: 78px; font-size: 350px; line-height: 1; color: var(--accent); }
-  .spec { position: absolute; left: 80px; right: 80px; bottom: 120px; display: flex; gap: 44px; font-size: 18px; color: var(--muted);
-          border-top: 1px solid var(--line); padding-top: 22px; }
+  html, body { margin: 0; width: 1280px; height: 640px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: XK; }
+  .page { position: relative; width: 1280px; height: 640px; padding: 56px 80px; text-align: center; }
+  .meta { font-size: 15px; letter-spacing: .22em; color: var(--muted); }
+  /* 田字格：外框实线，中间一横一竖虚线，像小朋友的练字本 */
+  .row { display: flex; justify-content: center; gap: 18px; margin-top: 40px; }
+  .box { width: 188px; height: 188px; border: 4px solid var(--accent); font-size: 146px; line-height: 180px; padding-top: 6px;
+         background:
+           repeating-linear-gradient(to bottom, var(--grid) 0 11px, transparent 11px 20px) center / 2.5px 100% no-repeat,
+           repeating-linear-gradient(to right, var(--grid) 0 11px, transparent 11px 20px) center / 100% 2.5px no-repeat; }
+  h1 { font-weight: 400; font-size: 54px; line-height: 1; margin: 38px 0 0; }
+  h1 span { color: var(--accent); margin-left: .3em; }
+  .lead-en { font-size: 23px; margin: 14px 0 0; color: var(--muted); }
+  .spec { position: absolute; left: 80px; right: 80px; bottom: 74px; display: flex; justify-content: center; gap: 44px; font-size: 18px;
+          color: var(--muted); border-top: 1px solid var(--line); padding-top: 20px; }
   .spec b { color: var(--accent); font-weight: 400; margin-right: .55em; }
-  .sample { position: absolute; left: 80px; right: 80px; bottom: 56px; font-size: 25px; display: flex; justify-content: space-between; }
-  .sample .url { color: var(--muted); font-size: 18px; align-self: flex-end; }
+  .url { position: absolute; left: 0; right: 0; bottom: 34px; font-size: 16px; color: var(--muted); }
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="meta">CHINESE AND LATIN SERIF / V0.6 / 2026.10</div>
-  <h1>Duyan<span>渡言</span></h1>
-  <div class="lead">一字一言。</div>
-  <div class="lead-en">Every stroke drawn from scratch.</div>
-  <div class="big">渡</div>
+  <div class="meta">CHINESE AND LATIN TYPE / V0.7 / 2026.10</div>
+  <div class="row"><div class="box">小</div><div class="box">克</div><div class="box">写</div><div class="box">的</div><div class="box">字</div></div>
+  <h1>小克体<span>Xiaoke</span></h1>
+  <div class="lead-en">Every stroke drawn from scratch, a little clumsy.</div>
   <div class="spec">
-    <span><b>Han</b>Song strokes, 100 so far</span>
-    <span><b>Latin</b>Bookish serif, A–Z 0–9</span>
+    <span><b>Han</b>103 characters so far</span>
+    <span><b>Latin</b>A–Z a–z 0–9</span>
     <span><b>Method</b>One pen, built in code</span>
     <span><b>License</b>SIL OFL 1.1</span>
   </div>
-  <div class="sample"><span>山下江边，林中花草。The quick brown fox jumps over the lazy dog.</span><span class="url">github.com/Sorasukiawa/Duyan</span></div>
+  <div class="url">github.com/Sorasukiawa/Duyan</div>
 </div>
 </body>
 </html>

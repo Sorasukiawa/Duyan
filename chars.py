@@ -1,4 +1,4 @@
-"""渡言的常用字（第一批）：用 parts.py 的部件按框架摆放拼成。
+"""小克体的常用字（第一批）：用 parts.py 的部件按框架摆放拼成。
 
 左右结构：左偏旁按它画好的位置放，右边的部件从整字框压进右边的框；上下结构同理。
 笔画越多的字整体越细一点（weight），压窄的部件才不会显得太黑。
@@ -6,7 +6,7 @@
 import han
 import layout
 from han import dian, heng, hengpie, hengpie_wangou, hengzhegou, pie, shu, weight
-from parts import (ID, H_, HP_, INNER_, KOU_, P_, S_, SG_, SWG_, D_, HZ_, into, ben, bi, cao, cun, da, er, fu_left,
+from parts import (ID, H_, HP_, HZG_, INNER_, KOU_, P_, S_, SG_, SWG_, D_, HZ_, into, ben, bi, cao, cun, da, er, fu_left,
                    gan, gong, gu, he_left, hua, ke, kou, li, men, mian, mu, mu_box, mu_left, nv_left, piezhe, qu,
                    ren, ren_left, ren_top, ri, ri_left, she, shou, shui, shi_, si_left, sheng, tian_, tu, wang,
                    wang_lost, wen, xin, xin_left, yan, yan_left, ye, you, you_left, yuan, yue, yue_left, zao, zi_,
@@ -378,6 +378,35 @@ def c_yuan_far():              # 远
     return bao(zou, yuan, (320, 210, 930, 870))
 
 
+def c_ke():                    # 克：十、口、儿
+    return [heng(64, 936, 772), shu(500, 880, 620, top="head", end="hid")] + han._kou(250, 750, 620, 420) + [
+        han.shupie(424, 420, 100, -60, head="hid"),
+        han.shuwangou(628, 420, 14, 936, top="hid")]
+
+
+def c_xie():                   # 写：冖 + 与
+    return [dian((112, 812), (134, 690), w=han.V * 1.05), han.hook_down(134, 884, 760, entry=None),
+            heng(258, 724, 556, beak=0.7),
+            han.shuzhezhegou(322, 556, 380, 774, -50, top="hid"),
+            heng(62, 938, 206)]
+
+
+def bai_left(m=ID):
+    """白（左偏旁，的）"""
+    return [P_(m, (230, 886), (166, 784), w0=han.V * 0.86)] + KOU_(m, 110, 320, 700, 40) + [INNER_(m, 110, 320, 372)]
+
+
+def shao(m=ID):
+    """勺（的 的右边）"""
+    return [P_(m, (360, 880), (110, 540), w0=han.V * 1.0),
+            HZG_(m, 230, 800, 712, -50),
+            D_(m, (360, 470), (500, 320), w=han.V * 1.1)]
+
+
+def c_de():                    # 的
+    return lr(bai_left, shao, (400, -60, 940, 880))
+
+
 GLYPHS = {
     "二": c_er, "三": c_san, "上": c_shang, "下": c_xia, "不": c_bu, "小": c_xiao, "山": c_shan, "了": c_le,
     "力": lambda: li(), "也": lambda: ye(), "子": lambda: zi_(), "心": lambda: xin(), "月": lambda: yue(),
@@ -394,4 +423,5 @@ GLYPHS = {
     "安": c_an, "完": c_wan, "它": c_ta_it, "守": c_shou_keep, "花": c_hua, "草": c_cao, "苦": c_ku,
     "思": c_si, "想": c_xiang_think, "念": c_nian, "忘": c_wang_forget,
     "这": c_zhe, "过": c_guo, "达": c_da_reach, "边": c_bian, "远": c_yuan_far,
+    "克": c_ke, "写": c_xie, "的": c_de,
 }
