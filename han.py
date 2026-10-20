@@ -1,4 +1,4 @@
-"""渡言的汉字：轮廓优先，宋体笔法。
+"""小克体的汉字：轮廓优先，宋体笔法。
 
 字身框 1000 × 1000（y 从 -120 到 880），字面大约 x 60–960、y -60–915。
 竖画 104、横画 60，和西文同一套粗细。
@@ -431,6 +431,14 @@ def shuzhe(x, y0, yb, x1, top="head", right="flat"):
     end = [n(x1, yb + T, hid=right == "hid"), n(x1, yb - T, hid=right == "hid", t="line")]
     return Shape(shu_top(x, y0, top) + [n(r, yb + T)] + end + [n(l + 10, yb - T), n(l, yb - T + 14, t="line")],
                  name="竖折")
+
+
+def shuzhezhegou(x, y0, y1, x1, yb, dx=-110, dy=80, top="head"):
+    """竖折折钩（与、写 里那一笔）：竖往下，转成一横往右，再折下来成竖钩。
+    y1 是那一横的中线，x1 是竖钩的右边沿，yb 是钩的底。"""
+    l, r = x - V / 2, x + V / 2
+    return Shape(shu_top(x, y0, top) + [n(r, y1 + T)] + shoulder(x1, y1) + gou_end(x1 - V / 2, yb, dx, dy)
+                 + [n(x1 - V, y1 - T), n(l + 10, y1 - T), n(l, y1 - T + 14, t="line")], name="竖折折钩")
 
 
 def shuwangou(x, y0, yb, x1, top="head", hook=74, r_in=64, wb=None):

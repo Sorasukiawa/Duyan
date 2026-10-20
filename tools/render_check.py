@@ -57,7 +57,7 @@ def run(font):
 
 
 if __name__ == "__main__":
-    font = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "..", "sample", "Duyan-Sample.otf")
+    font = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "..", "sample", "Xiaoke-Sample.otf")
     bad = run(font)
     if bad is None:
         print("不是 macOS，跳过")
