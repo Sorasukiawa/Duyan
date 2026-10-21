@@ -8,7 +8,7 @@
 
 The Latin is a calm, bookish serif. The Chinese is written with the same pen: heavy verticals and light horizontals, round teardrop dots, and a soft beak at the end of each horizontal stroke. The Chinese side is still growing, one character at a time. The name 渡言 means "words that ferry across": the font carries text between Chinese and English. Every glyph is drawn from scratch; no outlines from existing fonts are used.
 
-[Design and construction](docs/DESIGN.md) · [Chinese structure rules](docs/STRUCTURE.md) (both in Chinese)
+[Design and construction](docs/DESIGN.md) · [Drawing rules](docs/RULES.md) · [Chinese structure rules](docs/STRUCTURE.md) (all in Chinese)
 
 ## Progress
 
