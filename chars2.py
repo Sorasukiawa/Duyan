@@ -153,12 +153,13 @@ def xi_(m=ID):
             D_(m, (380, 610), (540, 480), w=V(1.1))]
 
 
-def zou_di(m=ID, heng_top=True):
-    """定、是 下面的「𤴓」：顶横（是 用自己的长横，不画）、中间一竖、右边短横、左边竖撇、长捺托底。"""
+def zou_di(m=ID, heng_top=True, na_end=(870, -30), shu_end=100):
+    """定、是 下面的「𤴓」：顶横（是 用自己的长横，不画）、中间一竖、右边短横、左边竖撇、长捺托底。
+    压窄放进右边时（提）捺脚会往右冲，na_end 往里收；中间一竖的末端 shu_end 要跟着藏进捺里。"""
     return [H_(m, 170, 830, 760)] * heng_top + [
-            S_(m, 500, 760, 100, top="hid", end="hid"), H_(m, 500, 800, 470, entry=None, beak=0.6),
+            S_(m, 500, 760, shu_end, top="hid", end="hid"), H_(m, 500, 800, 470, entry=None, beak=0.6),
             shupie(m.x(290), m.y(560), m.x(70), m.y(-40), w0=V(0.95), head="cut"),
-            na(m.p((280, 250)), m.p((870, -30)), m.v((-40, -70)), wmax=V(1.18) * (0.8 + 0.2 * m.k))]
+            na(m.p((280, 250)), m.p(na_end), m.v((-40, -70)), wmax=V(1.18) * (0.8 + 0.2 * m.k))]
 
 
 def yun_left(m=ID):
