@@ -27,10 +27,11 @@ def collect():
     except ModuleNotFoundError:
         return out
     table = dict(han.GLYPHS)
-    try:
-        table.update(importlib.import_module("chars").GLYPHS)
-    except ModuleNotFoundError:
-        pass
+    for mod in ("chars", "chars2"):          # 第一批、第二批常用字
+        try:
+            table.update(importlib.import_module(mod).GLYPHS)
+        except ModuleNotFoundError:
+            pass
     for ch, fn in table.items():
         out[ch] = (fn(), 1000)
     return out

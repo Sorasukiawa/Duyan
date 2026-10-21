@@ -183,13 +183,13 @@ def mu_left(m=ID):
 def wang_left(m=ID):
     """王（左偏旁）：底横变成提。"""
     return [H_(m, 50, 310, 720, beak=0.5), H_(m, 60, 290, 430, beak=0.4),
-            S_(m, 176, 720, 120, top="hid", end="hid"), T_(m, (40, 90), (330, 210), w0=han.V * 0.9)]
+            S_(m, 176, 720, 156, top="hid", end="hid"), T_(m, (86, 102), (330, 226), w0=han.V * 0.9)]
 
 
 def tu_left(m=ID):
     """土（左偏旁）：底横变成提。"""
-    return [S_(m, 176, 820, 130, top="head", end="hid"), H_(m, 50, 310, 520, beak=0.5),
-            T_(m, (40, 100), (330, 230), w0=han.V * 0.9)]
+    return [S_(m, 176, 820, 166, top="head", end="hid"), H_(m, 50, 310, 520, beak=0.5),
+            T_(m, (86, 112), (330, 236), w0=han.V * 0.9)]
 
 
 def ri_left(m=ID):
