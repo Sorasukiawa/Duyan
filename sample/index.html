@@ -6,7 +6,7 @@
 <title>渡言小样</title>
 <link rel="icon" href="../brand/icon.svg">
 <style>
-  @font-face { font-family: "Duyan Sample"; src: url("Duyan-Sample.otf?v=14") format("opentype"); }
+  @font-face { font-family: "Duyan Sample"; src: url("Duyan-Sample.otf?v=15") format("opentype"); }
   :root { --paper: #F4F1EA; --ink: #1D1C1A; --accent: #21505C; --muted: #6F6A60; --line: #DED8CC; --soft: #EBE7DD; }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) { --paper: #171716; --ink: #ECE9E2; --accent: #7FB3BE; --muted: #A19C92; --line: #34322E; --soft: #201F1D; }
@@ -181,7 +181,7 @@
   <h2>现在的状态</h2>
   <ul class="status note">
     <li>英文：小写 26、大写 26、数字 10、常用标点 18 个（还没有 &amp;、@ 这类符号），226 个常用字距对。</li>
-    <li>汉字 251 个（第一批常用字 86 个、之前的 14 个、「克」「写」「的」「来」「笔」「练」，第二批 47 个、第三批 98 个、第四批 100 个高频字）、假名 1 个、中文标点 2 个。</li>
+    <li>汉字 351 个（第一批常用字 86 个、之前的 14 个、「克」「写」「的」「来」「笔」「练」，第二批 47 个、第三批 98 个、第四批 100 个高频字）、假名 1 个、中文标点 2 个。</li>
     <li>只有 Regular 一个字重；还没做小字号的细节优化。</li>
     <li>0.3 换了造字方式：每一笔（连笔也算一笔）直接画成一条闭合轮廓，在曲线的极值点和转角放节点，和在造字软件里画字一样；横折的肩、横撇的转角、球形收笔都画在轮廓里，不再拼补丁。</li>
     <li>每次出字体前自动按设计意图检查：该藏起来的端点有没有露头、轮廓有没有打结、有没有没标明的尖角、两笔的边有没有擦边或贴着走、笔画之间有没有窄缝、有没有一笔整个落在另一条轮廓里。现在 434 个字形全部通过；另外用 macOS 的系统渲染逐字核对一遍。</li>
