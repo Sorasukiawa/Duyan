@@ -21,6 +21,7 @@ import glyphs  # noqa: E402
 from check import check  # noqa: E402
 
 UPM = 1000
+VERSION = "0.010"           # 0.10 版；name 表和 head 表的版本号都从这里来
 
 
 def glyph_name(ch):
@@ -57,10 +58,11 @@ def main():
     if problems and a.strict:
         sys.exit(f"有 {problems} 处问题，没有生成字体")
 
-    order = [".notdef", "space"] + [glyph_name(ch) for ch in table]
+    spaces = {0x20: ("space", 230), 0xA0: (glyph_name("\u00a0"), 230), 0x3000: (glyph_name("\u3000"), 1000)}   # 空格、不换行空格、全角空格
+    order = [".notdef"] + [name for name, _ in spaces.values()] + [glyph_name(ch) for ch in table]
     fb = FontBuilder(UPM, isTTF=False)
     fb.setupGlyphOrder(order)
-    cmap = {32: "space"}
+    cmap = {u: name for u, (name, _) in spaces.items()}
     cmap.update({ord(ch): glyph_name(ch) for ch in table})
     fb.setupCharacterMap(cmap)
     charstrings, metrics = {}, {}
@@ -68,8 +70,9 @@ def main():
     pen.moveTo((60, 0)); pen.lineTo((60, 700)); pen.lineTo((440, 700)); pen.lineTo((440, 0)); pen.closePath()
     charstrings[".notdef"] = pen.getCharString()
     metrics[".notdef"] = (500, 60)
-    charstrings["space"] = T2CharStringPen(230, None).getCharString()
-    metrics["space"] = (230, 0)
+    for name, adv in spaces.values():
+        charstrings[name] = T2CharStringPen(adv, None).getCharString()
+        metrics[name] = (adv, 0)
     for ch, (shapes, adv) in table.items():
         name = glyph_name(ch)
         pen = T2CharStringPen(adv, None)
@@ -85,16 +88,21 @@ def main():
     fb.setupNameTable({"familyName": {"en": "Duyan Sample", "zh": "渡言 小样"}, "styleName": "Regular",
                        "fullName": {"en": "Duyan Sample Regular", "zh": "渡言 小样 Regular"},
                        "psName": "DuyanSample-Regular",
-                       "version": "Version 0.010",
+                       "version": "Version " + VERSION, "uniqueFontIdentifier": f"{VERSION};NONE;DuyanSample-Regular",
                        "copyright": "Copyright 2026 The Duyan Project Authors (https://github.com/Sorasukiawa/Duyan)",
                        "designer": "Sora", "vendorURL": "https://github.com/Sorasukiawa/Duyan",
                        "licenseDescription": "This Font Software is licensed under the SIL Open Font License, Version 1.1. "
                                              "This license is available with a FAQ at: https://openfontlicense.org",
                        "licenseInfoURL": "https://openfontlicense.org"})
     # fsType 0：可安装嵌入。开源字体不限制嵌入（fontTools 默认是 4，「只许预览和打印」，浏览器存 PDF 时会把字转成图形）
+    # fsSelection 0x40：Regular。代码页 fontTools 默认全是 0，有的软件会因此不把它列进中文字体：
+    # 按字体里实际有的字重新算（现在只算得出西文），再标上简体中文（bit 18）——汉字还没收全，但它是中文字体
     fb.setupOS2(sTypoAscender=880, sTypoDescender=-120, sTypoLineGap=0, usWinAscent=1000, usWinDescent=280,
-                sxHeight=540, sCapHeight=720, achVendID="NONE", fsType=0)
-    fb.setupPost()
+                sxHeight=540, sCapHeight=720, achVendID="NONE", fsType=0, fsSelection=0x40)
+    fb.font["OS/2"].recalcCodePageRanges(fb.font)
+    fb.font["OS/2"].ulCodePageRange1 |= 1 << 18
+    fb.updateHead(fontRevision=float(VERSION))
+    fb.setupPost(underlinePosition=-110, underlineThickness=50)
     fea, kerned = kern_feature(table)
     fb.addOpenTypeFeatures(fea)
     out = os.path.join(HERE, "sample", "Duyan-Sample.otf")
