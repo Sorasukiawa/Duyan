@@ -27,7 +27,7 @@ def collect():
     except ModuleNotFoundError:
         return out
     table = dict(han.GLYPHS)
-    for mod in ("chars", "chars2"):          # 第一批、第二批常用字
+    for mod in ("chars", "chars2", "chars3"):          # 第一批、第二批、第三批常用字
         try:
             table.update(importlib.import_module(mod).GLYPHS)
         except ModuleNotFoundError:
