@@ -156,7 +156,7 @@ def HZ_(m, x0, xc, y, y1, **kw):
 # ───────── 第一组：新部件的字 ─────────
 
 def c_na():                    # 那
-    return lr(na_left, fu_right, (560, -70, 945, 880))
+    return lr(na_left, fu_right, (560, -70, 945, 880), 0.9)
 
 
 def c_bu_part():               # 部
@@ -168,7 +168,7 @@ def c_dou():                   # 都
 
 
 def c_yuan_member():           # 员
-    return tb(lambda m: KOU_(m, 250, 750, 800, 590, foot=30), bei, (80, -70, 920, 530))
+    return tb(lambda m: KOU_(m, 250, 750, 800, 590, foot=30), bei, (80, -70, 920, 530), 0.9)
 
 
 def c_ze():                    # 则
@@ -176,7 +176,7 @@ def c_ze():                    # 则
 
 
 def c_zheng_govern():          # 政
-    return lr(zheng_left, pu, (450, -70, 945, 880))
+    return lr(zheng_left, pu, (450, -70, 945, 880), 0.9)
 
 
 def c_zuo_do():                # 做
@@ -185,7 +185,7 @@ def c_zuo_do():                # 做
 
 
 def c_fang_put():              # 放
-    return lr(fang_left, pu, (470, -70, 945, 880))
+    return lr(fang_left, pu, (470, -70, 945, 880), 0.9)
 
 
 def c_gai():                   # 改
@@ -197,15 +197,15 @@ def c_shou_receive():          # 收
 
 
 def c_suo():                   # 所
-    return lr(hu_left, jin_axe, (470, -70, 945, 880))
+    return lr(hu_left, jin_axe, (470, -70, 945, 880), 0.9)
 
 
 def c_ting():                  # 听
-    return lr(kou_left, jin_axe, (370, -70, 945, 880))
+    return lr(kou_left, jin_axe, (370, -70, 945, 880), 0.9)
 
 
 def c_jin_near():              # 近
-    return bao(zou, jin_axe, (330, 150, 930, 880))
+    return bao(zou, jin_axe, (330, 150, 930, 880), 0.9)
 
 
 def c_xin_new():               # 新
@@ -213,7 +213,7 @@ def c_xin_new():               # 新
 
 
 def c_hen():                   # 很
-    return lr(chi_left, gen, (380, -70, 945, 880))
+    return lr(chi_left, gen, (380, -70, 945, 880), 0.9)
 
 
 def c_yan_eye():               # 眼
@@ -225,15 +225,15 @@ def c_gen_root():              # 根
 
 
 def c_ji_at_once():            # 即
-    return lr(ji_rice, jie, (520, -70, 945, 880))
+    return lr(ji_rice, jie, (520, -70, 945, 880), 0.9)
 
 
 def c_tui():                   # 退
-    return bao(zou, gen, (330, 200, 920, 890))
+    return bao(zou, gen, (330, 200, 920, 890), 0.9)
 
 
 def c_shi_know():              # 识
-    return lr(yan_left, zhi_only, (360, -40, 945, 860))
+    return lr(yan_left, zhi_only, (360, -40, 945, 860), 0.9)
 
 
 # ───────── 第二组的部件 ─────────
@@ -307,7 +307,7 @@ def wu_noon(m=ID):
     p0, p1 = (420, 880), (90, 500)
     x0 = han.on_pie(m.p(p0), m.p(p1), (0, 0), m.y(650))[0]
     return [P_(m, p0, p1, w0=V(0.95)), heng(x0, m.x(900), m.y(650), entry=None), H_(m, 56, 944, 380),
-            S_(m, 580, 650, -70, top="hid")]
+            S_(m, 580, 650, -70, top="hid", end="needle")]
 
 
 def dai_dull(m=ID):
@@ -346,7 +346,7 @@ def c_te():                    # 特
 
 
 def c_wu_thing():              # 物
-    return lr(niu_left, wu_not, (420, -70, 945, 880))
+    return lr(niu_left, wu_not, (420, -70, 945, 880), 0.9)
 
 
 def c_ti_lift():               # 提
@@ -367,7 +367,7 @@ def c_jie_take():              # 接
 
 
 def c_qi_period():             # 期
-    return lr(lambda m: qi_part(into((40, -70, 560, 880))), yue, (560, -70, 945, 880), 0.9)
+    return lr(lambda m: qi_part(into((40, -70, 560, 880))), yue, (560, -70, 945, 880), 0.88)
 
 
 def c_zhi_straight():          # 直
@@ -394,14 +394,14 @@ def c_bian():                  # 便
 
 
 def c_kong():                  # 空
-    return _w(0.9, lambda: mian() + [pie((380, 680), (140, 460), w0=V(0.95)), dian((600, 690), (780, 490), w=V(1.1)),
+    return _w(0.9, lambda: mian() + [pie((380, 680), (140, 460), w0=V(0.95)), dian((600, 690), (780, 494), w=V(1.1)),
                                      heng(180, 780, 330), shu(500, 330, 20, top="hid", end="hid"), heng(56, 944, 20)])
 
 
 def c_zhi_govern():            # 治
     return lr(shui, lambda m: [piezhe(m.p((470, 880)), m.p((220, 560)), m.p((830, 640)), w=V(0.9)),
                                D_(m, (680, 800), (840, 650))] + KOU_(m, 230, 770, 380, 10, foot=30),
-              (330, -70, 945, 880))
+              (330, -70, 945, 880), 0.9)
 
 
 def c_ji_base():               # 基
@@ -413,11 +413,11 @@ def c_si_manage():             # 司
 
 
 def c_zhu_live():              # 住
-    return lr(ren_left, zhu_master, (330, -70, 945, 880))
+    return lr(ren_left, zhu_master, (330, -70, 945, 880), 0.9)
 
 
 def c_wang_go():               # 往
-    return lr(chi_left, zhu_master, (380, -70, 945, 880))
+    return lr(chi_left, zhu_master, (380, -70, 945, 880), 0.9)
 
 
 # ───────── 第三组的部件 ─────────
@@ -514,13 +514,13 @@ def shi_left(m=ID):
 
 def shen(m=ID):
     """申（神 的右边）：日 + 中间一竖穿过。"""
-    return KOU_(m, 200, 800, 700, 200, foot=30) + [INNER_(m, 200, 800, 450), S_(m, 500, 880, -70)]
+    return KOU_(m, 200, 800, 700, 200, foot=30) + [INNER_(m, 200, 800, 450), S_(m, 500, 880, -70, end="needle")]
 
 
 def dou_ladle(m=ID):
     """斗（科 的右边）：两点、斜横、长竖。"""
     return [D_(m, (190, 700), (300, 620), w=V(0.9)), D_(m, (190, 520), (300, 440), w=V(0.9)),
-            tilted(H_(m, 56, 944, 300), 8, m.x(56), m.y(300)), S_(m, 680, 880, -70)]
+            tilted(H_(m, 56, 944, 300), 8, m.x(56), m.y(300)), S_(m, 680, 880, -70, end="needle")]
 
 
 def cheng_show(m=ID):
@@ -573,7 +573,7 @@ def c_chu_place():             # 处
 
 
 def c_bie():                   # 别
-    return lr(ling_left, dao_right, (600, -60, 945, 880))
+    return lr(ling_left, dao_right, (600, -60, 945, 880), 0.9)
 
 
 def c_ling():                  # 另
@@ -586,7 +586,7 @@ def c_zong():                  # 总
 
 
 def c_wu_affair():             # 务
-    return tb(lambda m: zhi_go_top(m), li, (70, -70, 930, 420), 0.9, tbox=(70, 420, 930, 880))
+    return tb(lambda m: zhi_go_top(m), li, (70, -70, 930, 420), 0.92, tbox=(70, 420, 930, 880))
 
 
 def zhi_go_top(m=ID, na_end=(880, 430)):
@@ -607,15 +607,15 @@ def c_fan():                   # 反
 
 
 def c_she():                   # 社
-    return lr(shi_left, tu, (380, -70, 945, 880))
+    return lr(shi_left, tu, (380, -70, 945, 880), 0.9)
 
 
 def c_shen():                  # 神
-    return lr(shi_left, shen, (380, -70, 945, 880))
+    return lr(shi_left, shen, (380, -70, 945, 880), 0.9)
 
 
 def c_ke_subject():            # 科
-    return lr(he_left, dou_ladle, (400, -70, 945, 880))
+    return lr(he_left, dou_ladle, (400, -70, 945, 880), 0.9)
 
 
 def c_cheng_journey():         # 程
@@ -623,11 +623,11 @@ def c_cheng_journey():         # 程
 
 
 def c_ba_hold():               # 把
-    return lr(shou, ba_snake, (380, -70, 945, 880))
+    return lr(shou, ba_snake, (380, -70, 945, 880), 0.9)
 
 
 def c_ba_ma():                 # 吧
-    return lr(kou_left, ba_snake, (380, -70, 945, 880))
+    return lr(kou_left, ba_snake, (380, -70, 945, 880), 0.9)
 
 
 # ───────── 第四组的部件 ─────────
@@ -681,7 +681,7 @@ def shi_teacher_left(m=ID):
 def za(m=ID):
     """帀（师 的右边）：横 + 巾。"""
     return [H_(m, 56, 944, 790), S_(m, 200, 640, 130), HZG_(m, 200, 800, 600, 130),
-            S_(m, 500, 790, -70, top="hid")]
+            S_(m, 500, 790, -70, top="hid", end="needle")]
 
 
 def qi_seven_left(m=ID):
@@ -759,7 +759,7 @@ def c_qu_take():               # 取
 
 
 def c_la():                    # 拉
-    return lr(shou, li_stand, (360, -70, 945, 880))
+    return lr(shou, li_stand, (360, -70, 945, 880), 0.9)
 
 
 def c_ge_grid():               # 格
@@ -773,7 +773,7 @@ def c_jue_feel():              # 觉
 
 
 def c_shu_art():               # 术
-    return mu() + [dian((690, 860), (790, 740), w=V(1.05))]
+    return mu() + [dian((690, 860), (790, 746), w=V(1.05))]
 
 
 def c_shi_teacher():           # 师
@@ -781,11 +781,11 @@ def c_shi_teacher():           # 师
 
 
 def c_guan_view():             # 观
-    return lr(you_left, jian_see, (390, -70, 945, 880), 0.9)
+    return lr(you_left, jian_see, (390, -70, 945, 880), 0.92)
 
 
 def c_qing_clear():            # 清
-    return lr(shui, qing, (330, -70, 945, 880), 0.9)
+    return lr(shui, qing, (330, -70, 945, 880), 0.88)
 
 
 def c_qie():                   # 切
@@ -803,7 +803,7 @@ def c_dao_guide():             # 导
 
 
 def c_yun():                   # 运
-    return bao(zou, yun, (330, 220, 920, 860))
+    return bao(zou, yun, (330, 220, 920, 860), 0.9)
 
 
 def c_xiao():                  # 笑
@@ -908,13 +908,13 @@ def c_ran():                   # 然
 
 
 def c_shi_thing():             # 事
-    return _w(0.88, lambda: [heng(56, 944, 770)] + _kou(240, 740, 680, 540, foot=30) + [
+    return _w(0.9, lambda: [heng(56, 944, 770)] + _kou(240, 740, 680, 540, foot=30) + [
         hengzhe(130, 792, 410, 220 - 34), heng(56, 944, 315), heng(150, 740, 220, beak=False, right_hid=True),
         shugou(490, 880, -60)])
 
 
 def c_zhong_heavy():           # 重
-    return _w(0.88, lambda: [pie((800, 880), (150, 770), bend=(0, -10), w0=V(0.85)), heng(56, 944, 650)]
+    return _w(0.9, lambda: [pie((800, 880), (150, 770), bend=(0, -10), w0=V(0.85)), heng(56, 944, 650)]
               + _kou(170, 810, 540, 280, foot=30)
               + [heng(170, 810, 410, beak=False, entry=None, right_hid=True), shu(490, 790, 20, end="hid"),
                  heng(140, 840, 150), heng(56, 944, 20)])
@@ -963,7 +963,7 @@ def c_fei():                   # 非
 
 
 def c_que():                   # 却
-    return lr(lambda m: qu(into((60, -70, 580, 880))), jie, (560, -70, 945, 880))
+    return lr(lambda m: qu(into((60, -70, 580, 880))), jie, (560, -70, 945, 880), 0.9)
 
 
 def c_jie_world():             # 界
@@ -981,11 +981,11 @@ def c_quan():                  # 权
 
 
 def c_she_set():               # 设
-    return lr(yan_left, shu_weapon, (340, -70, 945, 880), 0.9)
+    return lr(yan_left, shu_weapon, (340, -70, 945, 880), 0.92)
 
 
 def c_zhang():                 # 张
-    return lr(gong_bow, chang_long_r, (400, -70, 945, 880), 0.9)
+    return lr(gong_bow, chang_long_r, (400, -70, 945, 880), 0.92)
 
 
 def c_fei_fly():               # 飞

@@ -1,9 +1,11 @@
-"""把西文、汉字的轮廓收集起来，摆好位置：西文按左右边距排，汉字步进 1000。"""
+"""把西文、汉字的轮廓收集起来，摆好位置：西文按左右边距排，汉字步进 1000、从设计坐标压到字身里。"""
 import importlib
 
+import layout
 from outline import bounds
 
 CAP_SIDE = 50               # 大写字母的默认左右边距（小写、数字、标点用 latin.SIDE）
+WEIGHT = {}                 # 每个汉字画的时候用过的减细档位（collect() 填，结构检查核对）
 
 
 def _optional(mod):
@@ -39,6 +41,11 @@ def collect():
         m = _optional(mod)
         if m:
             table.update(m.GLYPHS)
+    # 汉字在设计坐标里画，这里整字纵向压扁、中心对到字身中心（见 layout.HAN_SY）
+    sy, by = layout.HAN_SY, layout.EM_CY - layout.HAN_CY * layout.HAN_SY
     for ch, fn in table.items():
-        out[ch] = (fn(), 1000)
+        with han.drawing(sy) as used:
+            shapes = fn()
+        WEIGHT[ch] = sorted(set(used)) or [1.0]
+        out[ch] = ([s.mapped(ay=sy, by=by) for s in shapes], 1000)
     return out

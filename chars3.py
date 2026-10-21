@@ -86,7 +86,7 @@ def niu(m=ID):
     p0, p1 = (420, 840), (130, 430)
     x0 = han.on_pie(m.p(p0), m.p(p1), (0, 0), m.y(620))[0]
     return [P_(m, p0, p1, w0=V(0.95)), heng(x0, m.x(900), m.y(620), entry=None),
-            H_(m, 56, 944, 330), S_(m, 600, 880, -70)]
+            H_(m, 56, 944, 330), S_(m, 600, 880, -70, end="needle")]
 
 
 def ren9(m=ID):
@@ -290,7 +290,7 @@ def c_ru():                    # 入
 def c_qian():                  # 千
     p0, p1 = (860, 860), (200, 690)
     y = pie_at_x(p0, p1, (0, -10), 500)[1]
-    return [pie(p0, p1, bend=(0, -10), w0=V(0.9)), heng(56, 944, 470), shu(500, y + 10, -60)]
+    return [pie(p0, p1, bend=(0, -10), w0=V(0.9)), heng(56, 944, 470), shu(500, y + 10, -60, end="needle")]
 
 
 def c_bai_hundred():           # 百
@@ -304,19 +304,19 @@ def c_bai():                   # 白
 
 
 def c_wei_pos():               # 位
-    return lr(ren_left, li_stand, (330, -60, 945, 880))
+    return lr(ren_left, li_stand, (330, -60, 945, 880), 0.9)
 
 
 def c_zhong_kind():            # 种
-    return lr(he_left, zhong, (370, -70, 945, 880))
+    return lr(he_left, zhong, (370, -70, 945, 880), 0.9)
 
 
 def c_li_profit():             # 利
-    return lr(he_left, dao_right, (620, -60, 945, 880), lsx=1.5)
+    return lr(he_left, dao_right, (620, -60, 945, 880), 0.9, lsx=1.5)
 
 
 def c_li_reason():             # 理
-    return lr(wang_left, li_in, (340, -60, 945, 880), 0.9)
+    return lr(wang_left, li_in, (340, -60, 945, 880), 0.88)
 
 
 def c_hua_talk():              # 话
@@ -339,8 +339,8 @@ def c_shao():                  # 少
 
 
 def c_ping():                  # 平
-    return [heng(100, 900, 760), dian((200, 690), (300, 500), w=V(1.0)), pie((830, 670), (620, 450), w0=V(0.9)),
-            heng(56, 944, 380), shu(500, 760, -60, top="hid")]
+    return [heng(100, 900, 760), dian((200, 690), (300, 506), w=V(1.0)), pie((830, 664), (620, 450), w0=V(0.9)),
+            heng(56, 944, 380), shu(500, 760, -60, top="hid", end="needle")]
 
 
 def c_wu_five():               # 五
@@ -368,16 +368,16 @@ def c_cai():                   # 才
 def c_yao():                   # 要
     return _w(0.9, lambda: [heng(56, 944, 790)] + _kou(210, 800, 650, 510, foot=30) + [
         shu(370, 790, 510, top="hid", end="hid"), shu(620, 790, 510, top="hid", end="hid"),
-        piedian((380, 410), (230, 170), (800, -40)), pie((720, 415), (70, -50), bend=(-30, -30), w0=V(0.95)),
+        piedian((380, 410), (230, 170), (800, -40)), pie((720, 410), (70, -50), bend=(-30, -30), w0=V(0.95)),
         heng(56, 944, 290)])
 
 
 def c_dao_way():               # 道
-    return bao(zou, shou_head, (345, 150, 930, 880))
+    return bao(zou, shou_head, (345, 150, 930, 880), 0.88)
 
 
 def c_yang_kind():             # 样
-    return lr(mu_left, yang, (380, -70, 945, 880))
+    return lr(mu_left, yang, (380, -70, 945, 880), 0.88)
 
 
 def c_shi_real():              # 实
@@ -394,9 +394,9 @@ def c_zhe_one():               # 者
 
 def c_yi_idea():               # 意
     def top(m):
-        return [dian((455, 915), (525, 850), w=V(1.0)), heng(110, 890, 740),
+        return [dian((455, 919), (525, 854), w=V(1.0)), heng(110, 890, 740),
                 dian((300, 725), (330, 690), w=V(0.75)), pie((700, 725), (670, 680), w0=V(0.7)),
-                heng(56, 944, 595)] + KOU_(m, 250, 750, 475, 320, foot=34) + [INNER_(m, 250, 750, 397)]
+                heng(56, 944, 589)] + KOU_(m, 250, 750, 465, 314, foot=34) + [INNER_(m, 250, 750, 389)]
     return tb(top, xin_di, (70, -70, 930, 260), 0.88)
 
 
@@ -410,7 +410,7 @@ def c_yi_already():            # 已
 
 
 def c_qing():                  # 情
-    return lr(xin_left, qing, (330, -70, 945, 880), 0.9)
+    return lr(xin_left, qing, (330, -70, 945, 880), 0.88)
 
 
 def c_guan():                  # 关
@@ -500,17 +500,17 @@ def c_qi_rise():               # 起
 
 def c_che():                   # 车
     return [heng(56, 944, 690), piezhe((480, 870), (250, 400), (850, 400), w=V(0.86), end="beak"),
-            shu(505, 620, -60), heng(56, 944, 190)]
+            shu(505, 620, -60, end="needle"), heng(56, 944, 190)]
 
 
 def c_shu_book():              # 书
     return [han.hengzhe(140, 720, 640, 400, end="hid"), hengzhegou(56, 840, 400, -20),
-            shu(465, 880, -60), dian((760, 820), (880, 680), w=V(1.0))]
+            shu(465, 880, -60, end="needle"), dian((760, 820), (880, 680), w=V(1.0))]
 
 
 def c_shi_market():            # 市
     return [dian((470, 920), (530, 820)), heng(56, 944, 680), shu(230, 550, 70),
-            hengzhegou(230, 790, 510, 90), shu(510, 680, -60, top="hid")]
+            hengzhegou(230, 790, 510, 90), shu(510, 680, -60, top="hid", end="needle")]
 
 
 def c_jian_item():             # 件
@@ -545,7 +545,7 @@ def c_du_degree():             # 度
 
 
 def c_deng():                  # 等
-    return tb(zhu_top, si_temple, (70, -70, 930, 590), 0.9)
+    return tb(zhu_top, si_temple, (70, -70, 930, 590), 0.88)
 
 
 def c_chan():                  # 产
@@ -566,8 +566,8 @@ def c_chang_often():           # 常
     return _w(0.88, lambda: [
         shu(500, 880, 650, end="hid"), dian((250, 880), (320, 780)), pie((790, 880), (660, 760), w0=V(0.85)),
         dian((110, 760), (130, 620), w=V(1.0)), han.hook_down(130, 890, 650, entry=None)]
-        + _kou(300, 700, 530, 390, foot=30)
-        + [shu(200, 260, -40), hengzhegou(200, 840, 260, -30), shu(500, 390, -70, top="hid")])
+        + _kou(300, 700, 526, 390, foot=30)
+        + [shu(200, 260, -40), hengzhegou(200, 840, 260, -30), shu(500, 390, -70, top="hid", end="needle")])
 
 
 def c_yuan_origin():           # 原

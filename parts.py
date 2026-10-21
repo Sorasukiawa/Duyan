@@ -407,7 +407,7 @@ def xin(m=ID):
 
 def wang_lost(m=ID):
     """亡"""
-    return [D_(m, (476, 930), (540, 848)), H_(m, 56, 944, 646), SZ_(m, 230, 646, 80, 900, top="hid")]
+    return [D_(m, (476, 930), (540, 856)), H_(m, 56, 944, 646), SZ_(m, 230, 646, 80, 900, top="hid")]
 
 
 def sheng(m=ID):

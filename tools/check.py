@@ -146,8 +146,10 @@ def check(shapes, gap=34):
                 issues.append(("被吞", x, y, f"{s.name or '笔画'} 整笔落在 {t.name or '另一笔'} 里面，系统渲染会把它当成字怀"))
                 break
 
-    # 走向不顺、小折角
-    for s in shapes:
+    # 走向不顺、小折角：在变换前的轮廓上查（汉字出字体前纵向压过，节点的走向标注留在 design 里，缩放不改变这两项），
+    # 报的位置换回出字体后的同一个节点
+    for final in shapes:
+        s = getattr(final, "design", final)
         k = len(s.nodes)
         for i, a in enumerate(s.nodes):
             b = s.nodes[(i + 1) % k]
@@ -163,11 +165,12 @@ def check(shapes, gap=34):
                 c1 = u[0] * chord[1] - u[1] * chord[0]
                 c2 = chord[0] * v[1] - chord[1] * v[0]
                 if c1 * c2 > 0:
-                    issues.append(("走向不顺", (a.x + b.x) / 2, (a.y + b.y) / 2, f"{s.name or '笔画'} 这一段两端的走向对不上"))
-        for q, (tin, tout) in zip(s.nodes, tangents(s)):
+                    fa, fb = final.nodes[i], final.nodes[(i + 1) % k]
+                    issues.append(("走向不顺", (fa.x + fb.x) / 2, (fa.y + fb.y) / 2, f"{s.name or '笔画'} 这一段两端的走向对不上"))
+        for q, fq, (tin, tout) in zip(s.nodes, final.nodes, tangents(s)):
             turn = abs(math.degrees(math.atan2(tin[0] * tout[1] - tin[1] * tout[0], tin[0] * tout[0] + tin[1] * tout[1])))
             if 3 < turn < 25 and not q.hid and not q.tip:
-                issues.append(("小折角", q.x, q.y, f"进出方向差 {turn:.0f}°"))
+                issues.append(("小折角", fq.x, fq.y, f"进出方向差 {turn:.0f}°"))
 
     # 打结
     for si, p in enumerate(polys):

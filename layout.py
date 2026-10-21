@@ -6,16 +6,45 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
-# ── 规范 ──
-FACE = (30, -100, 975, 880)        # 字面框：墨不能出这个框（捺脚、撇尖算在内）
+# ── 字面 ──
+# 字在设计坐标里画（长横 56–944，字面大约 y −67–896，偏高）；出字体时 glyphs.collect 把整字纵向压到 HAN_SY，
+# 设计坐标里的 HAN_CY 对到字身中心 EM_CY。横画在 han.drawing() 里先按 1/HAN_SY 加粗，压完正好是 60。
+# 2026-10-21 定：压完典型字面 −67–827、高约 896，和常见中文字体（字面约占字身九成）一致，所有字都在字面框里。
+HAN_SY = 0.93
+HAN_CY = 415
+EM_CY = 380
+FACE = (30, -100, 975, 880)        # 字面框（出字体后）：墨不能出这个框（捺脚、撇尖算在内）
+
+
+def han_y(y):
+    """设计坐标的 y 出字体后在哪。"""
+    return EM_CY + (y - HAN_CY) * HAN_SY
+
+
+# ── 拼字（设计坐标）──
 LR_GAP = 92                        # 左右结构：两个部件之间的距离
-TB_GAP = 76                        # 上下结构：两个部件之间的距离
+TB_GAP = 76                        # 上下结构：两个部件之间的距离（出字体后约 71）
 LR_GAP_BY_LEFT = {"fu_left": 60, "xin_left": 76}   # 偏旁靠右的一侧是细弧、点，按轮廓量会显得松
+
+# ── 检查（出字体后的坐标；纵向的数是原来设计坐标里的范围压过来的）──
 LR_GAP_RANGE = (55, 125)           # 检查时允许的范围（个别字手调过框时用）
-TB_GAP_RANGE = (50, 125)
-BAO_GAP_RANGE = (50, 140)          # 半包围（辶）：里面的部件和外框之间
+TB_GAP_RANGE = (46, 116)           # 设计坐标里 50–125
+BAO_GAP_RANGE = (46, 140)          # 半包围（辶）：里面的部件和外框之间（斜着量，下限按纵向压过来算）
 LR_CENTER_X = (390, 580)           # 左右结构的重心横坐标（宋体里 队、忙 这种左重的字也在 0.42 左右）
-TB_CENTER_Y = (330, 480)           # 上下结构的重心纵坐标
+TB_CENTER_Y = (301, 441)           # 上下结构的重心纵坐标（设计坐标里 330–480）
+
+# ── 减细档位：按整字的轮廓条数（docs/RULES.md「粗细」）──
+WEIGHT_TIERS = ((5, 1.0), (6, 0.92), (9, 0.9))     # 轮廓条数不超过多少 → 档位；再多是 0.88
+WEIGHT_MANY = 0.88
+WEIGHT_COMPOSED = 0.92             # lr()、tb()、bao() 拼的字部件压进了窄格，最少也减到这一档
+WEIGHT_EXCEPT = {}                 # 破例的字，写明理由
+
+
+def weight_for(n, composed):
+    """n 条轮廓的字该用的减细档位。"""
+    k = next((k for most, k in WEIGHT_TIERS if n <= most), WEIGHT_MANY)
+    return min(k, WEIGHT_COMPOSED) if composed else k
+
 CENTER_EXCEPT = {                  # 量出来超标、但目测平衡的字，写明理由
     "队": "左边一整条竖加耳刀，右边只有一撇一捺，按面积算的重心一定偏左（宋体约 415，这里约 370）",
 }

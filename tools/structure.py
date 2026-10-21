@@ -4,8 +4,10 @@
     python3 tools/structure.py              # 列出所有汉字的数据和超标项
     python3 tools/structure.py sheet.png    # 另外出一张总览图：字面框、重心十字、部件间距
 
-字面：墨的外框。重心：墨的面积中心。灰度：墨占字面框的比例。
+字面：墨的外框（按轮廓量，不受光栅范围限制）。重心：墨的面积中心。灰度：墨占字面框的比例。
 部件间距：用 lr()、tb() 拼出来的字，两个部件之间最近的距离（部件互相碰到时是 0），和 layout.fit 用的是同一把尺。
+减细：这个字画的时候用的 weight() 档位，和按轮廓条数该用的档位（layout.weight_for）比。
+都按出字体后的坐标量（汉字已经从设计坐标压到字身里，见 layout.HAN_SY）。
 """
 import os
 import sys
@@ -19,6 +21,7 @@ sys.path.insert(0, ROOT)
 sys.path.insert(0, HERE)
 import glyphs  # noqa: E402
 import layout  # noqa: E402
+from outline import bounds  # noqa: E402
 
 PX = 4                         # 光栅化时一个像素 = 4 单位
 TOP, BOTTOM = 880, -120        # 汉字的字身（1000 × 1000）
@@ -37,8 +40,7 @@ def raster(shapes):
 
 def measure(shapes):
     a = raster(shapes)
-    ys, xs = np.nonzero(a > 0.5)
-    face = (xs.min() * PX, TOP - (ys.max() + 1) * PX, (xs.max() + 1) * PX, TOP - ys.min() * PX)
+    face = bounds(shapes)          # 光栅只画字身那么大，出了字身的墨会被裁掉，字面要按轮廓量
     m = a.sum()
     yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]
     cx = (xx * a).sum() / m * PX + PX / 2
@@ -68,6 +70,13 @@ def problems(ch, r):
     fx0, fy0, fx1, fy1 = layout.FACE
     if x0 < fx0 or x1 > fx1 or y0 < fy0 or y1 > fy1:
         out.append(f"出了字面框 {layout.FACE}：{tuple(round(v) for v in r['face'])}")
+    w = r.get("weight")
+    if w is not None and ch not in layout.WEIGHT_EXCEPT:
+        want = layout.weight_for(r["n"], r["composed"])
+        if len(w) > 1:
+            out.append(f"一个字里用了几档减细 {w}")
+        elif abs(w[0] - want) > 1e-9:
+            out.append(f"减细 {w[0]}，{r['n']} 条轮廓{'（拼的字）' if r['composed'] else ''}应为 {want}")
     g, kind = r.get("gap"), r.get("kind")
     if g is not None:
         lo, hi = {"右": layout.LR_GAP_RANGE, "下": layout.TB_GAP_RANGE, "内": layout.BAO_GAP_RANGE}[kind]
@@ -90,11 +99,18 @@ def han_table():
     return {ch: sh for ch, (sh, adv) in t.items() if 0x4E00 <= ord(ch) <= 0x9FFF}
 
 
-def run():
+def run(table=None):
+    """table 是 glyphs.collect() 的结果；不给就自己 collect 一遍。"""
+    if table is None:
+        table = glyphs.collect()
     rows = {}
-    for ch, sh in han_table().items():
+    for ch, (sh, adv) in table.items():
+        if not 0x4E00 <= ord(ch) <= 0x9FFF:
+            continue
         r = measure(sh)
         r["gap"], r["kind"] = part_gap(sh)
+        r["weight"], r["n"] = glyphs.WEIGHT.get(ch), len(sh)
+        r["composed"] = any(getattr(s, "part", None) for s in sh)
         rows[ch] = r
     return rows
 
