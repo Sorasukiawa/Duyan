@@ -85,7 +85,7 @@ def main():
     fb.setupNameTable({"familyName": {"en": "Duyan Sample", "zh": "渡言 小样"}, "styleName": "Regular",
                        "fullName": {"en": "Duyan Sample Regular", "zh": "渡言 小样 Regular"},
                        "psName": "DuyanSample-Regular",
-                       "version": "Version 0.007",
+                       "version": "Version 0.008",
                        "copyright": "Copyright 2026 The Duyan Project Authors (https://github.com/Sorasukiawa/Duyan)",
                        "designer": "Sora", "vendorURL": "https://github.com/Sorasukiawa/Duyan",
                        "licenseDescription": "This Font Software is licensed under the SIL Open Font License, Version 1.1. "
