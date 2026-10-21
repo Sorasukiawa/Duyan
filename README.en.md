@@ -12,7 +12,7 @@ The Latin is a calm, bookish serif. The Chinese is written with the same pen: he
 
 ## Progress
 
-This is the 0.10 preview. It is not ready for body text yet: characters it does not cover fall back to other fonts on your system.
+This is the 0.11 preview. It is not ready for body text yet: characters it does not cover fall back to other fonts on your system.
 
 - Latin: upper and lowercase letters, figures and common punctuation, with 226 kerning pairs. Symbols such as &, @ and # and accented letters are not drawn yet.
 - Chinese: 351 common characters (Simplified), plus the kana の and the Chinese comma and full stop.

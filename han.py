@@ -1,7 +1,8 @@
 """渡言的汉字：轮廓优先，宋体笔法。
 
-字身框 1000 × 1000（y 从 -120 到 880），字面框见 layout.FACE（墨的实际范围见 docs/STRUCTURE.md「还没定的」）。
-竖画 104、横画 60，和西文同一套粗细。
+字身框 1000 × 1000（y 从 -120 到 880）。字在「设计坐标」里画，出字体时 glyphs.collect 把整字纵向压扁、
+中心移到字身中心（layout.HAN_SY、HAN_CY），字面框见 layout.FACE，说明见 docs/STRUCTURE.md「字面」。
+竖画 104、横画 60（出字体后的粗细），和西文同一套粗细。
 每一笔（连笔也算一笔）画成一条闭合轮廓，都按顺时针写（墨在走向的右边）：
 横折、横撇、横钩、横折钩、「了」的横撇连弯钩，转角处的肩直接画在轮廓里；
 不相连的笔画在笔画深处交叉，要藏起来的端点标 hid，有意的尖标 tip。
@@ -11,9 +12,11 @@ from contextlib import contextmanager
 
 from outline import D, L, R, U, Node, Shape, n
 
-V0, H0 = 104, 60            # 标准粗细
+V0, H0 = 104, 60            # 标准粗细（出字体后）
 V, H = V0, H0               # 当前粗细（笔画多的字用 weight() 临时调细）
 T = H / 2
+_SY = 1.0                   # 正在画的字出字体时纵向压扁的比例：横画先按 1/_SY 加粗，压完正好是标准粗细
+_used = None                # 正在画的字用过哪些 weight()（drawing() 里记，结构检查核对减细档位）
 
 
 @contextmanager
@@ -21,12 +24,29 @@ def weight(kv=1.0, kh=None):
     """临时调整竖画、横画的粗细：with weight(0.92): ... 里面画的笔画都按这个比例。"""
     global V, H, T
     old = V, H, T
-    V, H = V0 * kv, H0 * (kv if kh is None else kh)
+    V, H = V0 * kv, H0 * (kv if kh is None else kh) / _SY
     T = H / 2
+    if _used is not None:
+        _used.append(kv)
     try:
         yield
     finally:
         V, H, T = old
+
+
+@contextmanager
+def drawing(sy=1.0):
+    """画一个汉字：sy 是这个字出字体时纵向压扁的比例。with drawing(sy) as used: ... 之后，
+    used 里是这个字用过的 weight() 档位。"""
+    global V, H, T, _SY, _used
+    old = V, H, T, _SY, _used
+    _SY, _used = sy, []
+    V, H = V0, H0 / sy
+    T = H / 2
+    try:
+        yield _used
+    finally:
+        V, H, T, _SY, _used = old
 
 
 # ───────── 几何小工具 ─────────
@@ -359,11 +379,13 @@ def hengzhezhepie(x0, x1, y, p_mid, x2, p_end, w0=None, w2=None, bend1=(0, 0), b
     j2, j2d = _inner_corner(seg2, wf2, y2 - T)
     # 短横露出来的一截很短：肩只留一个微微隆起的点，太短就不要
     bump = [n(x2 - 22, y2 + T + 4, R, t=0.6)] if x2 - 22 > j1[0] + 10 else []
+    # 有肩时，凹角出去就是短横的顶边，往右走（不写的话这一小段会顺着弦斜着进肩，肩上留一个小拐）
+    j1n = n(*j1, din=_edge_dir(seg1, tj, wf1, 1), dout=R if bump else None)
     return Shape(heng_left(x0, y, entry) + [
         n(x1 - 104, y + T, R), n(x1 - 32, y + T + 14, R, t=0.62),
         n(*_edge(seg1, 0.04, wf1, 1), _edge_dir(seg1, 0.04, wf1, 1)),
         n(*_edge(seg1, tj * .5, wf1, 1), _edge_dir(seg1, tj * .5, wf1, 1)),
-        n(*j1, din=_edge_dir(seg1, tj, wf1, 1)),
+        j1n,
     ] + bump + [
         n(*_edge(seg2, 0.04, wf2, 1), _edge_dir(seg2, 0.04, wf2, 1)),
     ] + _pie_body(seg2, wf2) + [
@@ -760,8 +782,9 @@ def c_wen():                   # 文
 
 
 def c_yan():                   # 言
-    return [dian((455, 905), (540, 835)), heng(56, 944, 705), heng(210, 790, 565, beak=0.7), heng(210, 790, 430, beak=0.7)] \
-        + _kou(255, 745, 280, -20)
+    with weight(0.9):
+        return [dian((455, 905), (540, 835)), heng(56, 944, 705), heng(210, 790, 565, beak=0.7), heng(210, 790, 430, beak=0.7)] \
+            + _kou(255, 745, 280, -20)
 
 
 def c_yong():                  # 永
@@ -773,7 +796,7 @@ def c_yong():                  # 永
 
 
 def c_zi():                    # 字
-    return [dian((465, 905), (540, 835)),
+    return [dian((465, 905), (540, 839)),
             dian((150, 770), (170, 640), w=V * 1.05),
             hook_down(170, 870, 705, entry=None),
             hengpie_wangou(250, 744, 545, (430, 380), 505, 30),
@@ -781,21 +804,23 @@ def c_zi():                    # 字
 
 
 def c_mei():                   # 美
-    return [dian((290, 905), (345, 832)), pie((722, 905), (652, 805), w0=V * .95, head="round"),
-            heng(220, 780, 695), heng(250, 750, 590, beak=0.3), shu(500, 695, 480, top="hid", end="hid"),
-            heng(140, 860, 480, beak=0.3),
-            heng(56, 944, 330)] + _pie_na((505, 482), (70, -55), (10, -50), 280, (850, -15), w0=V * 1.05, head="hid")
+    with weight(0.9):
+        return [dian((290, 905), (345, 832)), pie((722, 905), (652, 805), w0=V * .95, head="round"),
+                heng(220, 780, 695), heng(250, 750, 590, beak=0.3), shu(500, 695, 480, top="hid", end="hid"),
+                heng(140, 860, 480, beak=0.3),
+                heng(56, 944, 330)] + _pie_na((505, 482), (70, -55), (10, -50), 280, (850, -15), w0=V * 1.05, head="hid")
 
 
 def c_du():                    # 渡
-    return [dian((85, 790), (180, 705), w=V * 1.05), dian((65, 570), (155, 485), w=V * 1.05),
-            ti((88, 70), (214, 312), w0=V),
-            dian((590, 915), (650, 855), w=V * 1.05), heng(362, 920, 735, entry=None),
-            pie((350, 770), (215, -60), bend=(-15, -10), w0=V),
-            heng(410, 912, 560, beak=0.8), nian_u(530, 735, 638, 455),
-            # 又：撇先往下再向左下扫出去，捺先陡后平、尾巴拖长，两笔都带弧度，不是直直的一个叉
-            hengpie(440, 844, 345, (345, -58), bend=(90, -40), w0=V * .95),
-            na((500, 340), (850, -28), bend=(-60, -50), wmax=V * 1.2, foot=0.75)]
+    with weight(0.88):
+        return [dian((85, 790), (180, 705), w=V * 1.05), dian((65, 570), (155, 485), w=V * 1.05),
+                ti((88, 70), (214, 312), w0=V),
+                dian((590, 915), (650, 855), w=V * 1.05), heng(362, 920, 735, entry=None),
+                pie((350, 770), (215, -60), bend=(-15, -10), w0=V),
+                heng(410, 912, 560, beak=0.8), nian_u(530, 735, 638, 455),
+                # 又：撇先往下再向左下扫出去，捺先陡后平、尾巴拖长，两笔都带弧度，不是直直的一个叉
+                hengpie(440, 844, 345, (345, -58), bend=(90, -40), w0=V * .95),
+                na((500, 340), (850, -28), bend=(-60, -50), wmax=V * 1.2, foot=0.75)]
 
 
 def capsule(p0, p1, w0, w1, w2, bend=(0, 0)):

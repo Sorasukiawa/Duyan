@@ -21,7 +21,7 @@ import glyphs  # noqa: E402
 from check import check  # noqa: E402
 
 UPM = 1000
-VERSION = "0.010"           # 0.10 版；name 表和 head 表的版本号都从这里来
+VERSION = "0.011"           # 0.11 版；name 表和 head 表的版本号都从这里来
 
 
 def glyph_name(ch):
@@ -51,7 +51,7 @@ def main():
             problems += 1
             print(f"{ch} {kind} ({x:.0f},{y:.0f}) {msg}")
     import structure
-    for ch, r in structure.run().items():
+    for ch, r in structure.run(table).items():
         for msg in structure.problems(ch, r):
             problems += 1
             print(f"{ch} 结构 {msg}")

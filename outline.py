@@ -99,12 +99,41 @@ class Shape:
         return 0.5 * sum(p[i][0] * p[(i + 1) % len(p)][1] - p[(i + 1) % len(p)][0] * p[i][1] for i in range(len(p)))
 
     # ── 变换 ──
+    def _like(self, nodes):
+        """换一组节点，其余属性（含结构检查用的 part）照抄。"""
+        s = Shape(nodes, self.tension, self.hole, self.name)
+        s.__dict__.update({k: v for k, v in self.__dict__.items() if k != "nodes"})
+        return s
+
     def moved(self, dx=0, dy=0):
-        return Shape([q.moved(dx, dy) for q in self.nodes], self.tension, self.hole, self.name)
+        return self._like([q.moved(dx, dy) for q in self.nodes])
 
     def mirrored(self, cx):
         """左右翻转。节点顺序不变，轮廓方向在输出时统一。"""
-        return Shape([q.mirrored(cx) for q in self.nodes], self.tension, self.hole, self.name)
+        return self._like([q.mirrored(cx) for q in self.nodes])
+
+    def mapped(self, ax=1.0, bx=0.0, ay=1.0, by=0.0):
+        """按轴缩放再平移：(x, y) → (ax·x + bx, ay·y + by)，画出来正好是原来曲线逐点变换的样子。
+        每段曲线实际用的控制柄换算成新长度直接写进 h（张力、切线交点这些算法在不等比缩放下会变样）；
+        变换前的轮廓留在 design 里，查走向、小折角这类和缩放无关的项目时用它。"""
+        def ang(a):
+            if a is None:
+                return None
+            r = math.radians(a)
+            return math.degrees(math.atan2(ay * math.sin(r), ax * math.cos(r))) % 360
+
+        segs = self.segments()
+        out = []
+        for q, seg in zip(self.nodes, segs):
+            h = None
+            if seg[0] == "curve":
+                _, p0, h1, h2, p1 = seg
+                h = tuple(math.hypot(ax * (c[0] - e[0]), ay * (c[1] - e[1])) for c, e in ((h1, p0), (p1, h2)))
+            out.append(Node(ax * q.x + bx, ay * q.y + by, din=ang(q.din), dout=ang(q.dout), hid=q.hid, tip=q.tip,
+                            t="line" if seg[0] == "line" else q.t, h=h))
+        s = self._like(out)
+        s.design = getattr(self, "design", self)
+        return s
 
     # ── 输出 ──
     def draw(self, pen, ccw=True):
