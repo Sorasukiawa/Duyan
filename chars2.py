@@ -11,10 +11,10 @@ V = lambda k=1.0: han.V * k      # noqa: E731
 
 # ───────── 新部件 ─────────
 
-def bu(m=ID):
-    """不（还 里面那个）"""
+def bu(m=ID, v_end=-70):
+    """不（还 里面那个；否 的头竖收短：v_end）"""
     return [H_(m, 62, 938, 760), P_(m, (560, 760), (90, 250), bend=(-30, -10), head="hid"),
-            S_(m, 530, 600, -70, top="head", end="dew"), D_(m, (660, 520), (860, 330))]
+            S_(m, 530, 600, v_end, top="head", end="dew"), D_(m, (660, 520), (860, 330))]
 
 
 def he_close(m=ID):
@@ -121,9 +121,14 @@ def c_yu():                    # 于
     return [heng(140, 860, 740), heng(56, 944, 440), han.shugou(500, 740, -50, top="hid")]
 
 
+def shou_hand(m=ID):
+    """手（拿 的下面，也可整字用）"""
+    return [P_(m, (790, 884), (250, 790), w0=V(0.9)), H_(m, 170, 830, 660), H_(m, 210, 790, 460),
+            H_(m, 56, 944, 250), SG_(m, 500, 800, -50, top="hid")]
+
+
 def c_shou_hand():             # 手
-    return [pie((790, 884), (250, 790), w0=V(0.9)), heng(170, 830, 660), heng(210, 790, 460),
-            heng(56, 944, 250), han.shugou(500, 800, -50, top="hid")]
+    return shou_hand()
 
 
 def zheng(m=ID):
@@ -235,12 +240,12 @@ def jing_well(m=ID):
             S_(m, 650, 880, -70, top="head", end="dew")]
 
 
-def zhi_left(m=ID):
-    """至（到 的左边）：底横收短。"""
+def zhi_left(m=ID, v_top=500):
+    """至（到、倒 的左边）：底横收短。压窄时（倒）土 的竖起笔往下挪（v_top），离上面的提远一点。"""
     return [H_(m, 72, 560, 800, beak=0.5),
             piezhe(m.p((320, 800)), m.p((170, 570)), m.p((460, 620)), w=V(0.8), head="hid"),
             D_(m, (390, 700), (520, 560), w=V(0.9)), H_(m, 110, 500, 380, beak=0.5),
-            S_(m, 300, 500, 40, top="head", end="hid"), H_(m, 64, 560, 40, beak=0.5)]
+            S_(m, 300, v_top, 40, top="head", end="hid"), H_(m, 64, 560, 40, beak=0.5)]
 
 
 def dao_right(m=ID):
@@ -332,9 +337,13 @@ def c_shi_is():                # 是
               + zou_di(into((70, -40, 930, 470)), heng_top=False))
 
 
+def you_frame(m=ID):
+    """𠂇（有、右 的外面）：横 + 从横上穿下来的长撇。"""
+    return [H_(m, 56, 944, 650), P_(m, (470, 880), (60, -60), bend=(10, -90), w0=V(1.05))]
+
+
 def c_you_have():              # 有
-    return [heng(56, 944, 650), pie((470, 880), (60, -60), bend=(10, -90), w0=V(1.05))] + \
-        yue(into((320, -60, 890, 500)))
+    return you_frame() + yue(into((320, -60, 890, 500)))
 
 
 def zai_frame(m=ID):

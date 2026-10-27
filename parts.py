@@ -297,16 +297,16 @@ def ben(m=ID):
     return mu(m) + [H_(m, 300, 700, 150, beak=0.6)]
 
 
-def mu(m=ID):
-    """木"""
+def mu(m=ID, pie_w=None):
+    """木。压得很扁时（案 的底）撇变平，起笔藏不进横里，pie_w 给细一点的撇。"""
     return [H_(m, 56, 944, 620), S_(m, 500, 872, -70, top="head", end="dew"),
-            P_(m, (480, 610), (90, 180), bend=(-20, -10), head="hid"),
+            P_(m, (480, 610), (90, 180), bend=(-20, -10), head="hid", w0=pie_w),
             N_(m, (520, 600), (860, 180), bend=(20, -10), wmax=han.V * 1.1)]
 
 
-def ke(m=ID):
-    """可"""
-    return [H_(m, 56, 944, 760), *KOU_(m, 200, 520, 560, 290, foot=30), SG_(m, 730, 760, -50)]
+def ke(m=ID, kou=(200, 520, 560, 290, 30)):
+    """可。压扁时（奇 的下面）口往下放、脚留长一点：kou 是口的左右竖、上下横和脚长。"""
+    return [H_(m, 56, 944, 760), *KOU_(m, *kou[:4], foot=kou[4]), SG_(m, 730, 760, -50)]
 
 
 def qu(m=ID):
@@ -378,11 +378,11 @@ def ren(m=ID):
             na(start, m.p((790, -20)), m.v((20, -20)), wmax=han.V * 1.35 * (0.8 + 0.2 * m.k), foot=0.7)]
 
 
-def da(m=ID):
-    """大"""
+def da(m=ID, na_end=(850, -10)):
+    """大。放进窄的右框时（状 的 犬）na_end 往里收。"""
     start = on_pie(m.p((505, 860)), m.p((70, -50)), m.v((10, -90)), m.y(470))
     return [H_(m, 56, 944, 530), P_(m, (505, 860), (70, -50), bend=(10, -90), w0=han.V * 1.1),
-            na(start, m.p((850, -10)), m.v((30, -10)), wmax=han.V * 1.18 * (0.8 + 0.2 * m.k))]
+            na(start, m.p(na_end), m.v((30, -10)), wmax=han.V * 1.18 * (0.8 + 0.2 * m.k))]
 
 
 def wen(m=ID):
@@ -410,9 +410,10 @@ def wang_lost(m=ID):
     return [D_(m, (476, 930), (540, 856)), H_(m, 56, 944, 646), SZ_(m, 230, 646, 80, 900, top="hid")]
 
 
-def sheng(m=ID):
-    """生"""
-    return [P_(m, (300, 870), (100, 520), w0=han.V * 0.96), H_(m, 196, 800, 650, entry=None),
+def sheng(m=ID, on_pie_x=False):
+    """生。压扁时（星 的下面）撇变平，第一横的起笔按撇在那个高度的位置找（on_pie_x），才藏得进撇里。"""
+    x0 = han.on_pie(m.p((300, 870)), m.p((100, 520)), (0, 0), m.y(650))[0] if on_pie_x else m.x(196)
+    return [P_(m, (300, 870), (100, 520), w0=han.V * 0.96), heng(x0, m.x(800), m.y(650), entry=None),
             H_(m, 170, 830, 380), S_(m, 500, 860, 80, top="head", end="hid"), H_(m, 56, 944, 80)]
 
 
