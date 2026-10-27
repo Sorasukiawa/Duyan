@@ -138,13 +138,13 @@ def ji_rice(m=ID):
 
 
 def jie(m=ID):
-    """卩（即 的右边）：横折钩 + 长竖。"""
-    return [HZG_(m, 300, 760, 790, 150), S_(m, 300, 830, -70)]
+    """卩（即、节 的一部分）：横折钩 + 长竖。竖头按绝对距离高出横 40（压扁的 节 里也不擦着横走）。"""
+    return [HZG_(m, 300, 760, 790, 150), han.shu(m.x(300), m.y(790) + 40, m.y(-70))]
 
 
-def zhi_only(m=ID):
-    """只（识 的右边）"""
-    return KOU_(m, 260, 740, 830, 420, foot=30) + [P_(m, (390, 290), (130, -50), w0=V(1.0)),
+def zhi_only(m=ID, foot=30):
+    """只（识、职 的右边）。压窄时口的脚 foot 留长一点。"""
+    return KOU_(m, 260, 740, 830, 420, foot=foot) + [P_(m, (390, 290), (130, -50), w0=V(1.0)),
                                                     D_(m, (620, 290), (860, -10), w=V(1.2))]
 
 
@@ -375,11 +375,15 @@ def c_qi_period():             # 期
     return lr(lambda m: qi_part(into((40, -70, 560, 880))), yue, (560, -70, 945, 880), 0.88)
 
 
+def zhi_straight(m=ID, kou=(340, 740)):
+    """直（值 的右边，也可整字用）。压窄时框里的目往右让（kou 是目的左右竖），别贴着左边的竖折。"""
+    a, b = kou
+    return [H_(m, 80, 920, 730), S_(m, 540, 880, 620, end="hid")] + KOU_(m, a, b, 620, 150) + [
+        INNER_(m, a, b, 460), INNER_(m, a, b, 300), shuzhe(m.x(170), m.y(640), m.y(10), m.x(944), right="beak")]
+
+
 def c_zhi_straight():          # 直
-    return _w(0.9, lambda: [heng(80, 920, 730), shu(540, 880, 620, end="hid")] + _kou(340, 740, 620, 150)
-              + [heng(340, 740, 460, beak=False, entry=None, right_hid=True),
-                 heng(340, 740, 300, beak=False, entry=None, right_hid=True),
-                 han.shuzhe(170, 640, 10, 944, right="beak")])
+    return _w(0.9, zhi_straight)
 
 
 def c_zhi_point():             # 指
@@ -440,14 +444,15 @@ def bing_left(m=ID):
     return [D_(m, (100, 790), (200, 640), w=V(1.0)), T_(m, (110, 80), (320, 440), w0=V(1.0))]
 
 
-def qian_owe(m=ID, hp_end=(720, 560)):
-    """欠（次 的右边）：撇、横撇、长撇、捺。压扁时（资 的头）横撇的撇太短会打结，hp_end 往下放。"""
+def qian_owe(m=ID, hp_end=(720, 560), na_end=(800, -40)):
+    """欠（次、欢 的右边）：撇、横撇、长撇、捺。压扁时（资 的头）横撇的撇太短会打结，hp_end 往下放；
+    放进窄的右框时 na_end 往里收。"""
     p0, p1 = (440, 880), (170, 560)
     x0 = han.on_pie(m.p(p0), m.p(p1), (0, 0), m.y(690))[0]
     return [P_(m, p0, p1, w0=V(0.95)),
             han.hengpie(x0, m.x(880), m.y(690), m.p(hp_end), w0=V(0.8), entry=None),
             P_(m, (560, 690), (100, -60), bend=(-30, -60), head="hid", w0=V(1.0)),
-            na(han.on_pie(m.p((560, 690)), m.p((100, -60)), m.v((-30, -60)), m.y(540)), m.p((800, -40)),
+            na(han.on_pie(m.p((560, 690)), m.p((100, -60)), m.v((-30, -60)), m.y(540)), m.p(na_end),
                m.v((20, -40)), wmax=V(1.18) * (0.8 + 0.2 * m.k))]
 
 
@@ -534,10 +539,10 @@ def shen(m=ID):
     return KOU_(m, 200, 800, 700, 200, foot=30) + [INNER_(m, 200, 800, 450), S_(m, 500, 880, -70, end="needle")]
 
 
-def dou_ladle(m=ID):
-    """斗（科 的右边）：两点、斜横、长竖。"""
+def dou_ladle(m=ID, h_y=300):
+    """斗（科、料 的右边，也可整字用）：两点、斜横、长竖。整字的点大，斜横往下放一点（h_y）。"""
     return [D_(m, (190, 700), (300, 620), w=V(0.9)), D_(m, (190, 520), (300, 440), w=V(0.9)),
-            tilted(H_(m, 56, 944, 300), 8, m.x(56), m.y(300)), S_(m, 680, 880, -70, end="needle")]
+            tilted(H_(m, 56, 944, h_y), 8, m.x(56), m.y(h_y)), S_(m, 680, 880, -70, end="needle")]
 
 
 def cheng_show(m=ID):
@@ -663,21 +668,23 @@ def ge_halberd(m=ID, xie_top=(300, 880), dot=((560, 840), (700, 710))):
             P_(m, (860, 470), (420, -40), w0=V(0.9)), D_(m, *dot)]
 
 
-def mi_rice(m=ID, top=((240, 890), (320, 790), (780, 890), (660, 780), 1.2)):
-    """米（类 的头，数 的左上）：两点、横、竖，撇和点从中间散开。
-    top 是横上面那一点、一撇的起止和点的粗细；压扁时（数）点要收小、离横远一点。"""
+def mi_rice(m=ID, top=((240, 890), (320, 790), (780, 890), (660, 780), 1.2), low=(400, (90, 380), (820, 420))):
+    """米（类 的头，数 的左上，也可整字用）：两点、横、竖，撇和点从中间散开。
+    top 是横上面那一点、一撇的起止和点的粗细；压扁时（数）点要收小、离横远一点。
+    low 是竖的末端、下面一撇和一点的终点：整字的 米 竖写到底，撇点张开。"""
     d0, d1, p0, p1, dw = top
+    ve, pe, de = low
     return [D_(m, d0, d1, w=V(dw)), P_(m, p0, p1, w0=V(0.85)),
-            H_(m, 56, 944, 650), S_(m, 500, 880, 400, end="dew"),
-            P_(m, (470, 640), (90, 380), w0=V(0.85), head="hid"), D_(m, (540, 620), (820, 420), w=V(1.0))]
+            H_(m, 56, 944, 650), S_(m, 500, 880, ve, end="dew"),
+            P_(m, (470, 640), pe, w0=V(0.85), head="hid"), D_(m, (540, 620), de, w=V(1.0))]
 
 
-def jiao(m=ID):
-    """交"""
+def jiao(m=ID, na_end=(840, -10)):
+    """交（较、校 的右边，也可整字用）。放进窄的右框时 na_end 往里收。"""
     return [D_(m, (450, 910), (520, 825)), H_(m, 56, 944, 700),
             P_(m, (280, 680), (90, 420), w0=V(0.85)), D_(m, (620, 690), (800, 440), w=V(1.05)),
             P_(m, (650, 340), (60, -50), bend=(-30, -40), w0=V(1.0)),
-            N_(m, (340, 490), (840, -10), bend=(20, -40), start="tip")]
+            N_(m, (340, 490), na_end, bend=(20, -40), start="tip")]
 
 
 def fu_man_left(m=ID):
@@ -749,9 +756,14 @@ def c_zhan():                  # 战
     return lr(zhan_left, ge_halberd, (450, -70, 945, 880), 0.9)
 
 
+def shi_style(m=ID):
+    """式（试 的右边，也可整字用）"""
+    return [H_(m, 56, 944, 660), xiegou(m.p((560, 880)), m.p((850, -30)), end=300), D_(m, (690, 845), (800, 720)),
+            H_(m, 100, 470, 470, beak=0.6), S_(m, 280, 470, 120, top="hid", end="hid"), T_(m, (100, 60), (580, 200))]
+
+
 def c_shi_style():             # 式
-    return _w(0.92, lambda: [heng(56, 944, 660), xiegou((560, 880), (850, -30), end=300), dian((690, 845), (800, 720)),
-            heng(100, 470, 470, beak=0.6), shu(280, 470, 120, top="hid", end="hid"), ti((100, 60), (580, 200))])
+    return _w(0.92, shi_style)
 
 
 def c_nan_south():             # 南
@@ -792,8 +804,14 @@ def c_jue_feel():              # 觉
     return tb(xue_top, jian_see, (80, -70, 920, 520), 0.9)
 
 
+def shu_art(m=ID):
+    """术（述 的里面，也可整字用）：木 + 右上一点。点离横按绝对距离留（压扁的 述 里也不贴横）。"""
+    ye = m.y(620) + 126
+    return mu(m) + [han.dian((m.x(690), ye + 114), (m.x(790), ye), w=V(1.05) * m.k)]
+
+
 def c_shu_art():               # 术
-    return mu() + [dian((690, 860), (790, 746), w=V(1.05))]
+    return shu_art()
 
 
 def c_shi_teacher():           # 师
@@ -960,10 +978,15 @@ def c_gan():                   # 感
     return tb(xian_all, xin_di, (70, -70, 930, 250), 0.88, tbox=(70, 280, 930, 890))
 
 
+def bi_must(m=ID):
+    """必（密 的中间，也可整字用）"""
+    return [D_(m, (420, 895), (520, 700), w=V(1.1)), D_(m, (170, 480), (200, 230), w=V(1.0)),
+            wogou(m.x(330), m.y(690), m.x(480), m.y(-40), m.x(820), m.y(0)),
+            P_(m, (760, 860), (60, -50), bend=(-40, -60), w0=V(1.0)), D_(m, (790, 520), (910, 300), w=V(1.1))]
+
+
 def c_bi_must():               # 必
-    return [dian((420, 895), (520, 700), w=V(1.1)), dian((170, 480), (200, 230), w=V(1.0)),
-            wogou(330, 690, 480, -40, 820, 0), pie((760, 860), (60, -50), bend=(-40, -60), w0=V(1.0)),
-            dian((790, 520), (910, 300), w=V(1.1))]
+    return bi_must()
 
 
 def c_ming_life():             # 命
@@ -997,8 +1020,11 @@ def c_jie_world():             # 界
     return _w(0.9, lambda: tian_(into((170, 450, 830, 880))) + jie_meet(into((50, -70, 950, 470))))
 
 
-def qie_and(m=ID):
-    """且"""
+def qie_and(m=ID, ti=False):
+    """且（组 的右边；助 的左边 ti=True：底横写成提，两竖收在提的中线上）"""
+    if ti:
+        return [S_(m, 320, 840, 40, end="hid"), HZ_(m, 320, 730, 800, 105, end="hid"),
+                INNER_(m, 320, 730, 540), INNER_(m, 320, 730, 290), T_(m, (160, 15), (950, 140), w0=V(1.15))]
     return [S_(m, 320, 840, 20, end="hid"), HZ_(m, 320, 730, 800, 20, end="hid"),
             INNER_(m, 320, 730, 540), INNER_(m, 320, 730, 280), H_(m, 56, 944, 20)]
 
@@ -1024,8 +1050,13 @@ def c_fei_fly():               # 飞
             pie((830, 760), (570, 500), w0=V(0.9)), dian((580, 480), (800, 370), w=V(1.05))]
 
 
+def se_color(m=ID):
+    """色（绝 的右边，也可整字用）：⺈ + 巴。"""
+    return dao_top(m) + ba_snake(m.into((120, -70, 900, 540)))
+
+
 def c_se():                    # 色
-    return _w(0.92, lambda: dao_top() + ba_snake(into((120, -70, 900, 540))))
+    return _w(0.92, se_color)
 
 
 GLYPHS = {

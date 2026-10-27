@@ -69,8 +69,13 @@ def c_kuai():                  # 快
     return lr(xin_left, jue, (340, -70, 900, 880), 0.9)
 
 
+def ban(m=ID):
+    """办（苏 的下面，也可整字用）：力 + 两点。"""
+    return li(m) + [D_(m, (230, 450), (110, 270), w=V(1.1)), D_(m, (520, 450), (650, 300), w=V(1.1))]
+
+
 def c_ban():                   # 办
-    return li() + [dian((230, 450), (110, 270), w=V(1.1)), dian((520, 450), (650, 300), w=V(1.1))]
+    return ban()
 
 
 def c_yi_discuss():            # 议
@@ -182,12 +187,12 @@ def shi_stone_left(m=ID):
         KOU_(m, 230, 420, 450, 90, foot=30)
 
 
-def huo_fire(m=ID):
-    """火"""
+def huo_fire(m=ID, na_end=(840, -40), dot=((150, 650), (240, 470))):
+    """火（炎 的上下两半，也可整字用）。压扁放在上面时（炎）na_end 收短，左点往左让开撇（dot）。"""
     p0, p1, bend = (520, 880), (70, -60), (10, -90)
-    return [D_(m, (150, 650), (240, 470), w=V(1.0)), P_(m, (820, 690), (660, 460), w0=V(0.9)),
+    return [D_(m, *dot, w=V(1.0)), P_(m, (820, 690), (660, 460), w0=V(0.9)),
             P_(m, p0, p1, bend=bend, w0=V(1.1)),
-            na(han.on_pie(m.p(p0), m.p(p1), m.v(bend), m.y(420)), m.p((840, -40)), m.v((30, -10)),
+            na(han.on_pie(m.p(p0), m.p(p1), m.v(bend), m.y(420)), m.p(na_end), m.v((30, -10)),
                wmax=V(1.18) * (0.8 + 0.2 * m.k))]
 
 
@@ -314,10 +319,16 @@ def c_cun_exist():             # 存
     return zai_frame() + zi_(into((400, -60, 930, 520)))
 
 
-def c_bu_cloth():              # 布
+def bu_cloth(m=ID):
+    """布（希 的下面，也可整字用）：𠂇 + 巾。巾 的左竖头按绝对距离高出横 40。"""
     p0, p1, bend = (450, 880), (60, -40), (10, -70)
-    return [H_(ID, 56, 944, 680), P_(ID, p0, p1, bend=bend, w0=V(1.05)), S_(ID, 400, 510, 40),
-            han.hengzhegou(400, 830 + han.V / 2, 470, 60), S_(ID, 615, 580, -70, end="needle")]
+    return [H_(m, 56, 944, 680), P_(m, p0, p1, bend=bend, w0=V(1.05)), han.shu(m.x(400), m.y(470) + 40, m.y(40)),
+            han.hengzhegou(m.x(400), m.x(830) + han.V / 2, m.y(470), m.y(60), -120 * m.k, 86 * m.k),
+            S_(m, 615, 580, -70, end="needle")]
+
+
+def c_bu_cloth():              # 布
+    return bu_cloth()
 
 
 
@@ -363,10 +374,14 @@ def mei_every(m=ID):
     """每（海 的右边，也可整字用）：𠂉 + 母（竖折、横折钩、长横、两点）。"""
     p0, p1 = (390, 880), (120, 650)
     x0 = han.on_pie(m.p(p0), m.p(p1), (0, 0), m.y(740))[0]
+    return [P_(m, p0, p1, w0=V(0.95)), heng(x0, m.x(880), m.y(740), entry=None, beak=0.6)] + mu_mother(m)
+
+
+def mu_mother(m=ID):
+    """母（每 的下面，也可整字用）：竖折、横折钩、长横、两点。按 每 下半截的位置画（y 约 -50–600）。"""
     xl = m.x(250)
     # 横折钩的起笔比竖折的左边沿多出一点点，竖折的头藏在横里
-    return [P_(m, p0, p1, w0=V(0.95)), heng(x0, m.x(880), m.y(740), entry=None, beak=0.6),
-            shuzhe(xl, m.y(580), m.y(110), m.x(760), top="hid", right="hid"),
+    return [shuzhe(xl, m.y(580), m.y(110), m.x(760), top="hid", right="hid"),
             hengzhegou(xl - han.V / 2 - 16, m.x(760) + han.V / 2, m.y(580), m.y(-50), -120 * m.k, 86 * m.k),
             H_(m, 56, 944, 345), D_(m, (480, 510), (540, 455), w=V(0.85)), D_(m, (480, 275), (540, 222), w=V(0.85))]
 
@@ -426,7 +441,7 @@ def ci_top(m=ID):
 
 def chong(m=ID):
     """充（统 的右边）：亠、厶、儿。"""
-    return [D_(m, (470, 915), (530, 835)), H_(m, 56, 944, 720),
+    return [D_(m, (470, 925), (530, 850)), H_(m, 56, 944, 720),
             piezhe(m.p((470, 720)), m.p((260, 470)), m.p((760, 520)), w=V(0.85), head="hid"),
             D_(m, (640, 640), (790, 500), w=V(1.0)),
             shupie(m.x(380), m.y(380), m.x(80), m.y(-60), head="cut", w0=V(0.9)), SWG_(m, 620, 380, -30, 930)]
@@ -497,13 +512,16 @@ def c_zhi_make():              # 制
     return lr(zhi_make_left, dao_right, (600, -60, 945, 880), 0.9)
 
 
+def shen_body(m=ID):
+    """身（射 的左边，也可整字用）"""
+    return [P_(m, (560, 900), (450, 765), w0=V(0.85)), S_(m, 250, 800, 320, end="hid"),
+            hengzhegou(m.x(250), m.x(760) + han.V / 2, m.y(760), m.y(-50), -120 * m.k, 86 * m.k),
+            INNER_(m, 250, 760, 610), INNER_(m, 250, 760, 470),
+            T_(m, (80, 290), (760, 380), w0=V(1.0)), P_(m, (880, 640), (180, -50), bend=(-40, -60), w0=V(1.0))]
+
+
 def c_shen_body():             # 身
-    return _w(0.9, lambda: [pie((560, 900), (450, 765), w0=V(0.85)), shu(250, 800, 320, end="hid"),
-                            hengzhegou(250, 760 + V() / 2, 760, -50),
-                            heng(250, 760, 610, beak=False, entry=None, right_hid=True),
-                            heng(250, 760, 470, beak=False, entry=None, right_hid=True),
-                            ti((80, 290), (760, 380), w0=V(1.0)),
-                            pie((880, 640), (180, -50), bend=(-40, -60), w0=V(1.0))])
+    return _w(0.9, shen_body)
 
 
 def c_hai():                   # 海
@@ -569,11 +587,16 @@ def c_lu_road():               # 路
     return lr(zu_left, lambda m: ge_each(m, na_end=(790, 400)), (420, -70, 945, 880), 0.88)
 
 
+def qiu(m=ID, na_end=(880, 60)):
+    """求（球 的右边，也可整字用）。放进窄的右框时 na_end 往里收。"""
+    return [H_(m, 56, 944, 720), SG_(m, 500, 880, -60), D_(m, (690, 870), (790, 770), w=V(1.0)),
+            D_(m, (200, 620), (290, 520), w=V(0.95)), T_(m, (110, 230), (470, 420), w0=V(1.0)),
+            P_(m, (820, 620), (530, 470), w0=V(0.9)),
+            N_(m, (520, 480), na_end, bend=(-20, -40), wmax=V(1.15))]
+
+
 def c_qiu():                   # 求
-    return _w(0.9, lambda: [heng(56, 944, 720), shugou(500, 880, -60), dian((690, 870), (790, 770), w=V(1.0)),
-                            dian((200, 620), (290, 520), w=V(0.95)), ti((110, 230), (470, 420), w0=V(1.0)),
-                            pie((820, 620), (530, 470), w0=V(0.9)),
-                            na((520, 480), (880, 60), bend=(-20, -40), wmax=V(1.15))])
+    return _w(0.9, qiu)
 
 
 def c_ji_level():              # 级
@@ -707,10 +730,14 @@ def c_feng():                  # 风
             pie((580, 560), (300, 140), w0=V(0.95)), dian((330, 520), (650, 170), w=V(1.1))]
 
 
+def zhi_stop(m=ID):
+    """止（步 的头，企 的下面，也可整字用）"""
+    return [S_(m, 500, 880, 430, end="hid"), H_(m, 500, 800, 690, entry=None, beak=0.6),
+            S_(m, 260, 640, 430, end="hid"), H_(m, 56, 944, 430)]
+
+
 def c_bu_step():               # 步
-    return _w(0.9, lambda: [shu(500, 880, 430, end="hid"), heng(500, 800, 690, entry=None, beak=0.6),
-                            shu(260, 640, 430, end="hid"), heng(56, 944, 430),
-                            pie((330, 320), (110, 110), w0=V(0.9)), shu(500, 340, _bu_y, end="hid"),
+    return _w(0.9, lambda: zhi_stop() + [pie((330, 320), (110, 110), w0=V(0.9)), shu(500, 340, _bu_y, end="hid"),
                             pie(_BU_P0, _BU_P1, bend=_BU_B, w0=V(1.05))])
 
 
@@ -759,15 +786,24 @@ def c_ling_order():            # 令
     return ling_order()
 
 
+def ni_nun(m=ID):
+    """尼（呢 的右边，也可整字用）：尸 + 匕。"""
+    return shi_corpse(m) + bi(m.into((300, -60, 930, 560)))
+
+
 def c_ne():                    # 呢
-    return lr(kou_left, lambda m: shi_corpse(m) + bi(m.into((300, -60, 930, 560))), (380, -70, 945, 880), 0.9)
+    return lr(kou_left, ni_nun, (380, -70, 945, 880), 0.9)
+
+
+def dan_single(m=ID):
+    """单（弹 的右边，也可整字用）"""
+    return [D_(m, (300, 905), (370, 795), w=V(1.0)), P_(m, (720, 900), (620, 770), w0=V(0.9))] + \
+        KOU_(m, 200, 800, 680, 320, foot=30) + [INNER_(m, 200, 800, 500), S_(m, 500, 680, -70, top="hid", end="needle"),
+                                              H_(m, 56, 944, 150)]
 
 
 def c_dan_single():            # 单
-    return _w(0.9, lambda: [dian((300, 905), (370, 795), w=V(1.0)), pie((720, 900), (620, 770), w0=V(0.9))]
-              + _kou(200, 800, 680, 320, foot=30)
-              + [heng(200, 800, 500, beak=False, entry=None, right_hid=True),
-                 shu(500, 680, -70, top="hid", end="needle"), heng(56, 944, 150)])
+    return _w(0.9, dan_single)
 
 
 def c_ju_tool():               # 具
@@ -787,9 +823,14 @@ def c_ai():                    # 爱
     return tb(zhao_claw, you_friend, (80, -50, 920, 470), 0.88)
 
 
+def ji_strike(m=ID):
+    """击（陆 的右边，也可整字用）"""
+    return [H_(m, 200, 800, 760), H_(m, 56, 944, 540), S_(m, 500, 880, 40, end="hid"),
+            shuzhe(m.x(200), m.y(380), m.y(40), m.x(800), right="hid"), S_(m, 800, 380, -30)]
+
+
 def c_ji_strike():             # 击
-    return [heng(200, 800, 760), heng(56, 944, 540), shu(500, 880, 40, end="hid"),
-            shuzhe(200, 380, 40, 800, right="hid"), shu(800, 380, -30)]
+    return ji_strike()
 
 
 def c_liu_flow():              # 流
@@ -950,9 +991,14 @@ def c_nong():                  # 农
                              na(han.on_pie(p0, p1, bend, 560), (840, -30), bend=(-40, -60), wmax=V(1.15))])
 
 
+def dong_winter(m=ID, na_end=(840, 430)):
+    """冬（图 的里面、终 的右边）：夂 + 两点。按 图 框里的位置画（大约 x 160–840、y 0–790）。"""
+    return zhi_go_top(m.into((210, 270, 790, 730)), na_end=na_end) + [
+        D_(m, (450, 360), (520, 300), w=V(0.9)), D_(m, (450, 220), (530, 140), w=V(0.95))]
+
+
 def c_tu_picture():            # 图
-    return _w(0.9, lambda: _kou(110, 890, 820, -40) + zhi_go_top(into((210, 270, 790, 730)), na_end=(840, 430))
-              + [dian((450, 360), (520, 300), w=V(0.9)), dian((450, 220), (530, 140), w=V(0.95))])
+    return _w(0.9, lambda: _kou(110, 890, 820, -40) + dong_winter())
 
 
 def c_yi_doctor():             # 医
@@ -1100,11 +1146,16 @@ def de_virtue_r(m=ID):
         xin_di(m.into((40, -70, 945, 320)))
 
 
-def qiang_r(m=ID):
-    """强 的右边：口 + 虫（口、穿过口的竖、提、点）。"""
+def chong_insect(m=ID):
+    """虫（强 的右下、虽 的下面）：口、穿过口的竖、提、点。按 强 右边下半截的位置画（y 约 10–560）。"""
     t0, t1 = (80, 30), (660, 175)
-    return KOU_(m, 270, 730, 840, 630, foot=38) + KOU_(m, 230, 770, 470, 240, foot=38) + [
+    return KOU_(m, 230, 770, 470, 240, foot=38) + [
         _shu_to_line(m, 500, 530, t0, t1), T_(m, t0, t1, w0=V(1.1)), D_(m, (760, 150), (880, 10), w=V(1.1))]
+
+
+def qiang_r(m=ID):
+    """强 的右边：口 + 虫。"""
+    return KOU_(m, 270, 730, 840, 630, foot=38) + chong_insect(m)
 
 
 def _shu_to_line(m, x, y0, p0, p1):
@@ -1163,9 +1214,10 @@ def yue_axe(m=ID):
             P_(m, (880, 460), (500, 60), w0=V(0.9)), D_(m, (690, 860), (780, 760), w=V(1.0))]
 
 
-def zeng(m=ID):
-    """曾（增 的右边）：丷（右边的撇落到框顶）、中间有竖的框、框里一点一撇、日。"""
-    return [D_(m, (250, 900), (318, 812), w=V(1.0)), P_(m, (760, 890), (520, 720), w0=V(0.9))] + \
+def zeng(m=ID, pie_end=(520, 720)):
+    """曾（增 的右边，也可整字用）：丷（右边的撇落到框顶）、中间有竖的框、框里一点一撇、日。
+    整字用时撇尖落在中竖右边的框顶上（pie_end），不和中竖擦着走。"""
+    return [D_(m, (250, 900), (318, 812), w=V(1.0)), P_(m, (760, 890), pie_end, w0=V(0.9))] + \
         KOU_(m, 160, 840, 700, 440, foot=30) + [S_(m, 500, 700, 440, top="hid", end="hid"),
                                               D_(m, (190, 610), (300, 560), w=V(0.85)),
                                               P_(m, (840, 650), (560, 520), w0=V(0.8), head="hid")] + \
@@ -1178,16 +1230,16 @@ def zhuang_top(m=ID):
                                                       H_(m, 450, 870, 530, beak=0.6)]
 
 
-def yi_cloth(m=ID):
-    """衣（装 的下面）：点、长横、从横起笔的长撇、竖提、捺、右边短撇。"""
+def yi_cloth(m=ID, na_end=(850, -20)):
+    """衣（装 的下面，依 的右边）：点、长横、从横起笔的长撇、竖提、捺、右边短撇。放进窄的右框时 na_end 往里收。"""
     k = 0.8 + 0.2 * m.k
     P0, P1, B = m.p((480, 700)), m.p((80, 150)), m.v((-20, -30))
     xs = m.x(330)
     ys = pie_at_x(P0, P1, B, xs - han.V / 2)[1]      # 竖提的头左角搭在长撇的中线上
-    return [D_(m, (470, 905), (540, 815)), H_(m, 56, 944, 700), pie(P0, P1, B, w0=V(0.95) * k, head="hid"),
+    return [D_(m, (470, 912), (540, 822)), H_(m, 56, 944, 700), pie(P0, P1, B, w0=V(0.95) * k, head="hid"),
             shuti(xs, ys - 16, m.y(-40), m.p((600, 80))),
-            na(m.p((500, 690)), m.p((850, -20)), m.v((-40, -60)), wmax=V(1.15) * k),
-            P_(m, (840, 640), (680, 500), w0=V(0.85))]
+            na(m.p((500, 690)), m.p(na_end), m.v((-40, -60)), wmax=V(1.15) * k),
+            P_(m, (790, 600), (640, 470), w0=V(0.85))]
 
 
 # ───────── 第六组的字 ─────────

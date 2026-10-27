@@ -21,7 +21,7 @@ import glyphs  # noqa: E402
 from check import check  # noqa: E402
 
 UPM = 1000
-VERSION = "0.012"           # 0.12 版；name 表和 head 表的版本号都从这里来
+VERSION = "0.013"           # 0.13 版；name 表和 head 表的版本号都从这里来
 
 
 def glyph_name(ch):

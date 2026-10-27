@@ -71,17 +71,34 @@ def c_xiao():                  # 小
             dian((650, 600), (880, 336))]
 
 
+def shan(m=ID):
+    """山（密 的下面，也可整字用）"""
+    return [S_(m, 500, 860, 110, end="hid"), han.shuzhe(m.x(170), m.y(610), m.y(110), m.x(830), right="hid"),
+            S_(m, 830, 640, 40, end="dew")]
+
+
 def c_shan():                  # 山
-    return [shu(500, 860, 110, end="hid"), han.shuzhe(170, 610, 110, 830, right="hid"), shu(830, 640, 40, end="dew")]
+    return shan()
 
 
 def c_le():                    # 了
     return [hengpie_wangou(124, 850, 770, (450, 560), 520, -50)]
 
 
+def fang(m=ID, dot=None):
+    """方（房、防 的一部分，也可整字用）。压扁时（房）dot=(点的末端高出横多少, 点有多长) 按绝对距离摆点。"""
+    if dot is None:
+        d = D_(m, (470, 912), (546, 806))
+    else:
+        ye = m.y(660) + dot[0]
+        d = dian((m.x(470), ye + dot[1]), (m.x(546), ye), w=han.V * 1.2 * m.k)
+    return [d, H_(m, 56, 944, 660),
+            hengzhegou(m.x(330), m.x(812), m.y(450), m.y(-40), -120 * m.k, 86 * m.k),
+            P_(m, (390, 666), (80, -60), bend=(-20, -10), head="hid")]
+
+
 def c_fang():                  # 方
-    return [dian((470, 912), (546, 806)), heng(56, 944, 660), hengzhegou(330, 812, 450, -40),
-            pie((390, 666), (80, -60), bend=(-20, -10), head="hid")]
+    return fang()
 
 
 def c_chu():                   # 出
@@ -397,8 +414,10 @@ def c_ke():                    # 克：十、口、儿
 
 
 def mi_cover(m=ID):
-    """冖（写、军 的头）"""
-    return [D_(m, (112, 812), (134, 690), w=han.V * 1.05), han.hook_down(m.x(134), m.x(884), m.y(756), entry=None)]
+    """冖（写、军、劳 的头）：左点的末端按绝对距离压在横钩的起笔上（压扁的 劳 里也盖得住）。"""
+    yl = m.y(756) - 66
+    return [han.dian((m.x(112), yl + 122), (m.x(134), yl), w=han.V * 1.05 * m.k),
+            han.hook_down(m.x(134), m.x(884), m.y(756), entry=None)]
 
 
 def c_xie():                   # 写：冖 + 与
@@ -442,24 +461,32 @@ def zhu_top(m=ID):
     return out
 
 
-def mao(m=ID):
-    """毛"""
-    return [P_(m, (800, 870), (230, 760), w0=han.V * 0.9),
-            H_(m, 200, 800, 600, beak=0.6), H_(m, 110, 890, 360),
-            SWG_(m, 500, 812, -40, 930, top="hid")]
+def mao(m=ID, top_on_pie=False):
+    """毛。整字用时（top_on_pie）竖弯钩的头按平撇在 x=500 处的中线起笔，整个藏进撇里。"""
+    p0, p1 = (800, 870), (230, 760)
+    if top_on_pie:
+        X = m.x(500)
+        y0 = han.on_pie(m.p(p0), m.p(p1), (0, 0), m.y(812))
+        seg = han.pie_seg(m.p(p0), m.p(p1))
+        y0 = han._bz(seg, han._solve(lambda t: han._bz(seg, t)[0], 0, 1, X))[1]
+        swg = han.shuwangou(X, y0, m.y(-40), m.x(930), top="hid", hook=74 * m.k)
+    else:
+        swg = SWG_(m, 500, 812, -40, 930, top="hid")
+    return [P_(m, p0, p1, w0=han.V * 0.9), H_(m, 200, 800, 600, beak=0.6), H_(m, 110, 890, 360), swg]
 
 
 def c_bi():                    # 笔
     return tb(zhu_top, mao, (70, -70, 930, 590), 0.88)
 
 
-def dong(m=ID):
-    """东"""
+def dong(m=ID, low=((400, 350), (150, 110), (690, 330), (846, 150))):
+    """东（练、陈 的右边，也可整字用）。low 是竖钩两边那一撇、一点的起止：压窄时（陈）往两边让开竖钩。"""
+    p0, p1, d0, d1 = low
     return [H_(m, 110, 890, 760),
             han.piezhe(m.p((470, 862)), m.p((196, 500)), m.p((850, 500)), w=han.V * 0.86, end="flat"),
             SG_(m, 530, 670, -50),
-            P_(m, (400, 350), (150, 110), w0=han.V * 0.9),
-            D_(m, (690, 330), (846, 150), w=han.V * 1.0)]
+            P_(m, p0, p1, w0=han.V * 0.9),
+            D_(m, d0, d1, w=han.V * 1.0)]
 
 
 def c_lian():                  # 练
