@@ -37,7 +37,7 @@ def collect():
     if han is None:
         return out
     table = dict(han.GLYPHS)
-    for mod in ("chars", "chars2", "chars3", "chars4"):          # 第一批到第四批常用字
+    for mod in ("chars", "chars2", "chars3", "chars4", "chars5"):          # 第一批到第五批常用字
         m = _optional(mod)
         if m:
             table.update(m.GLYPHS)

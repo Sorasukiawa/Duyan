@@ -90,10 +90,14 @@ def c_chu():                   # 出
             han.shuzhe(160, 380, 40, 840, right="hid"), shu(840, 400, -40, end="dew")]
 
 
+def zi_self(m=ID):
+    """自"""
+    return [P_(m, (546, 900), (436, 770), w0=han.V * 0.84)] + KOU_(m, 270, 730, 770, -40) + \
+        [INNER_(m, 270, 730, 520), INNER_(m, 270, 730, 260)]
+
+
 def c_zi_self():               # 自
-    with weight(0.92):
-        return [pie((546, 900), (436, 770), w0=han.V * 0.84)] + KOU_(ID, 270, 730, 770, -40) + \
-            [INNER_(ID, 270, 730, 520), INNER_(ID, 270, 730, 260)]
+    return _w(0.92, zi_self)
 
 
 def c_zhu():                   # 主
@@ -128,8 +132,13 @@ def c_hui():                   # 会
                                          piezhe((440, 296), (226, -22), (660, 44)), dian((646, 200), (836, -20))])
 
 
+def you_friend(m=ID):
+    """友（爱 的下面，也可整字用）"""
+    return [H_(m, 56, 944, 640), P_(m, (440, 870), (70, -60), bend=(-30, -30))] + you(m.into((300, -60, 930, 560)))
+
+
 def c_you_friend():            # 友
-    return [heng(56, 944, 640), pie((440, 870), (70, -60), bend=(-30, -30))] + you(into((300, -60, 930, 560)))
+    return you_friend()
 
 
 def c_zhi():                   # 只
@@ -387,8 +396,13 @@ def c_ke():                    # 克：十、口、儿
             han.shuwangou(628, 420, 14, 936, top="hid")]
 
 
+def mi_cover(m=ID):
+    """冖（写、军 的头）"""
+    return [D_(m, (112, 812), (134, 690), w=han.V * 1.05), han.hook_down(m.x(134), m.x(884), m.y(756), entry=None)]
+
+
 def c_xie():                   # 写：冖 + 与
-    return [dian((112, 812), (134, 690), w=han.V * 1.05), han.hook_down(134, 884, 756, entry=None),
+    return mi_cover() + [
             heng(258, 724, 556, beak=0.7),
             han.shuzhezhegou(322, 556, 380, 774, -50, top="hid"),
             heng(62, 938, 206)]
