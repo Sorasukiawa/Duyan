@@ -89,7 +89,7 @@ def problems(ch, r):
             pass
         elif kind == "右" and not layout.LR_CENTER_X[0] <= cx <= layout.LR_CENTER_X[1]:
             out.append(f"重心横坐标 {cx:.0f}，应在 {layout.LR_CENTER_X[0]}–{layout.LR_CENTER_X[1]}")
-        if kind == "下" and not layout.TB_CENTER_Y[0] <= cy <= layout.TB_CENTER_Y[1]:
+        elif kind == "下" and not layout.TB_CENTER_Y[0] <= cy <= layout.TB_CENTER_Y[1]:
             out.append(f"重心纵坐标 {cy:.0f}，应在 {layout.TB_CENTER_Y[0]}–{layout.TB_CENTER_Y[1]}")
     return out
 

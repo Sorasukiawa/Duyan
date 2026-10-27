@@ -457,6 +457,19 @@ def shugou(x, y0, yb, top="head", dx=-110, dy=80):
     return Shape(shu_top(x, y0, top) + gou_end(x, yb, dx, dy), name="竖钩")
 
 
+def wangou(x, y0, yb, bow=8, dx=-110, dy=80, top="hid", y0r=None):
+    """弯钩（豕、家、象 的那一笔）：竖往下、整支微微向右鼓（bow 是两端偏离竖直的角度），底部向左挑出钩。
+    写法同「了」下半截的弯钩：两条边各是一整条弧，钩同竖钩。从斜笔上起笔时顶边跟着斜：y0、y0r 是顶边左右两端的高度。"""
+    l, r = x - V / 2, x + V / 2
+    tip, bottom, join = (x + dx, yb + dy), (x + 4, yb - 14), (l, yb + 160)
+    hid = top == "hid"
+    return Shape([n(l, y0, din=90 + bow, hid=hid), n(r, y0 if y0r is None else y0r, dout=270 + bow, hid=hid),
+                  n(r, yb + 80, 270 - bow),
+                  n(*bottom, L, t=0.6),
+                  n(*tip, din=sym_end(bottom, 180, tip), dout=sym_start(tip, join, 90 - bow), tip=True),
+                  n(*join, 90 - bow)], name="弯钩")
+
+
 def shuzhe(x, y0, yb, x1, top="head", right="flat"):
     """竖折（山、出、世 的那一笔）：竖往下，在底部直角转向右成一横。yb 是那一横的中线，x1 是它的右端。
     right：flat 平收，hid 藏进别的笔画，beak 末端带喙（世）。"""

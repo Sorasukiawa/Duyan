@@ -136,29 +136,45 @@ def c_chang():                 # 长
             na((440, 440), (870, 70), bend=(-30, -40), wmax=V(1.15))]
 
 
+def yi_by(m=ID):
+    """以"""
+    return [shuti(m.x(230), m.y(810), m.y(50), m.p((560, 380))),
+            D_(m, (390, 790), (500, 580), w=V(1.1)),
+            shupie(m.x(780), m.y(870), m.x(160), m.y(-60), head="cut"),
+            D_(m, (690, 250), (870, 10), w=V(1.15))]
+
+
 def c_yi_by():                 # 以
-    return [shuti(230, 810, 50, (560, 380)),
-            dian((390, 790), (500, 580), w=V(1.1)),
-            shupie(780, 870, 160, -60, head="cut"),
-            dian((690, 250), (870, 10), w=V(1.15))]
+    return yi_by()
 
 
 def c_ji_few():                # 几
     return ji_few()
 
 
+def jiu(m=ID):
+    """九（究 的下面，也可整字用）"""
+    return [shupie(m.x(430), m.y(870), m.x(60), m.y(-60), w0=V(1.05), head="cut"),
+            hengzhewangou(m.x(80), m.x(680), m.y(590), m.y(-30), m.x(935), lean=20 * m.ax,
+                          hook=74 * m.k, r_in=90 * m.k, r_out=120 * m.k)]
+
+
 def c_jiu():                   # 九
-    return [shupie(430, 870, 60, -60, w0=V(1.05), head="cut"),
-            hengzhewangou(80, 680, 590, -30, 935, lean=20, r_in=90, r_out=120)]
+    return jiu()
+
+
+def cheng(m=ID, xie_top=(570, 880), dot=((690, 870), (790, 770))):
+    """成（城 的右边，也可整字用）。放进窄框时斜钩起笔（xie_top）和点（dot）跟着挪。"""
+    return [heng(m.x(240), m.x(944), m.y(640), entry=None),
+            shupie(m.x(240), m.y(690), m.x(40), m.y(-60), head="cut"),
+            hengzhegou(m.x(240), m.x(500), m.y(450), m.y(170), -120 * m.k, 86 * m.k),
+            xiegou(m.p(xie_top), m.p((850, -20)), end=305),
+            P_(m, (860, 520), (380, -40), bend=(-20, -30), w0=V(0.95)),
+            D_(m, *dot, w=V(1.0))]
 
 
 def c_cheng():                 # 成
-    return _w(0.92, lambda: [heng(240, 944, 640, entry=None),
-            shupie(240, 690, 40, -60, head="cut"),
-            hengzhegou(240, 500, 450, 170),
-            xiegou((570, 880), (850, -20), end=305),
-            pie((860, 520), (380, -40), bend=(-20, -30), w0=V(0.95)),
-            dian((690, 870), (790, 770), w=V(1.0))])
+    return _w(0.92, cheng)
 
 
 def c_fa_send():               # 发
@@ -358,9 +374,14 @@ def c_wan_10k():               # 万
             shupie(440, 760, 50, -40, head="hid")]
 
 
+def cai(m=ID):
+    """才"""
+    return [H_(m, 56, 944, 600), SG_(m, 610, 880, -60),
+            P_(m, (590, 560), (60, 40), bend=(-40, -60), head="hid")]
+
+
 def c_cai():                   # 才
-    return [heng(56, 944, 600), han.shugou(610, 880, -60),
-            pie((590, 560), (60, 40), bend=(-40, -60), head="hid")]
+    return cai()
 
 
 # ───────── 第三组 ─────────
@@ -413,24 +434,41 @@ def c_qing():                  # 情
     return lr(xin_left, qing, (330, -70, 945, 880), 0.88)
 
 
+def guan(m=ID, na_end=(850, -10)):
+    """关：放进窄的右框时（联）na_end 往里收，免得捺脚往右冲。"""
+    p0, p1, bend = (500, 600), (50, -40), (10, -60)
+    start = han.on_pie(m.p(p0), m.p(p1), m.v(bend), m.y(400))
+    return [D_(m, (250, 870), (330, 720), w=V(1.0)), P_(m, (790, 860), (660, 700), w0=V(0.9)),
+            H_(m, 150, 850, 600), H_(m, 56, 944, 390),
+            P_(m, p0, p1, bend=bend, head="hid", w0=V(1.05)),
+            na(start, m.p(na_end), m.v((30, -20)), wmax=V(1.18) * (0.8 + 0.2 * m.k))]
+
+
 def c_guan():                  # 关
-    start = han.on_pie((500, 600), (50, -40), (10, -60), 400)
-    return _w(0.92, lambda: [dian((250, 870), (330, 720), w=V(1.0)), pie((790, 860), (660, 700), w0=V(0.9)),
-            heng(150, 850, 600), heng(56, 944, 390),
-            pie((500, 600), (50, -40), bend=(10, -60), head="hid", w0=V(1.05)),
-            na(start, (850, -10), bend=(30, -20))])
+    return _w(0.92, guan)
+
+
+def ye_work(m=ID):
+    """业"""
+    return [S_(m, 400, 860, 30, end="hid"), S_(m, 600, 860, 30, end="hid"),
+            D_(m, (150, 620), (250, 240), w=V(1.0)), P_(m, (880, 600), (640, 100), w0=V(0.95)),
+            H_(m, 56, 944, 20)]
 
 
 def c_ye_work():               # 业
-    return [shu(400, 860, 30, end="hid"), shu(600, 860, 30, end="hid"),
-            dian((150, 620), (250, 240), w=V(1.0)), pie((880, 600), (640, 100), w0=V(0.95)),
-            heng(56, 944, 20)]
+    return ye_work()
+
+
+def liang(m=ID):
+    """两（满 的右下，也可整字用）"""
+    return [H_(m, 56, 944, 780), han.shu(m.x(177), m.y(600) + 40, m.y(-40)),
+            hengzhegou(m.x(177), m.x(889), m.y(600), m.y(-30), -120 * m.k, 86 * m.k),
+            shupie(m.x(340), m.y(780), m.x(210), m.y(140), w0=V(0.85), head="hid"), D_(m, (350, 410), (430, 230), w=V(0.95)),
+            shupie(m.x(600), m.y(780), m.x(450), m.y(110), w0=V(0.85), head="hid"), D_(m, (610, 410), (690, 230), w=V(0.95))]
 
 
 def c_liang():                 # 两
-    return _w(0.9, lambda: [heng(56, 944, 780), shu(177, 640, -40), hengzhegou(177, 889, 600, -30),
-            shupie(340, 780, 210, 140, w0=V(0.85), head="hid"), dian((350, 410), (430, 230), w=V(0.95)),
-            shupie(600, 780, 450, 110, w0=V(0.85), head="hid"), dian((610, 410), (690, 230), w=V(0.95))])
+    return _w(0.9, liang)
 
 
 def c_you_from():              # 由
@@ -485,9 +523,15 @@ def c_jin_gold():              # 金
 
 # ───────── 第四组 ─────────
 
+def zou_walk(m=ID, na_end=(870, -30), shu_end=100):
+    """走（越 的外面，也可整字用）：土 + 𤴓。na_end 是捺的终点（𤴓 自己的坐标），越 里捺要一直伸到右边，
+    中竖的末端 shu_end 跟着藏进捺里。"""
+    return [H_(m, 180, 820, 700), S_(m, 500, 880, 500, end="hid"), H_(m, 56, 944, 500)] + \
+        zou_di(m.into((70, -60, 930, 581)), heng_top=False, na_end=na_end, shu_end=shu_end)
+
+
 def c_zou_walk():              # 走
-    return _w(0.9, lambda: [heng(180, 820, 700), shu(500, 880, 500, end="hid"), heng(56, 944, 500)] + \
-        zou_di(into((70, -60, 930, 581)), heng_top=False))
+    return _w(0.9, zou_walk)
 
 
 def c_qi_rise():               # 起
@@ -498,9 +542,14 @@ def c_qi_rise():               # 起
         na((190, 225), (870, 10), bend=(-80, -110), wmax=V(1.1))] + ji(into((560, 200, 960, 760))))
 
 
+def che(m=ID):
+    """车"""
+    return [H_(m, 56, 944, 690), piezhe(m.p((480, 870)), m.p((250, 400)), m.p((850, 400)), w=V(0.86), end="beak"),
+            S_(m, 505, 620, -60, end="needle"), H_(m, 56, 944, 190)]
+
+
 def c_che():                   # 车
-    return [heng(56, 944, 690), piezhe((480, 870), (250, 400), (850, 400), w=V(0.86), end="beak"),
-            shu(505, 620, -60, end="needle"), heng(56, 944, 190)]
+    return che()
 
 
 def c_shu_book():              # 书
@@ -562,10 +611,14 @@ def c_biao():                  # 表
         na((530, 425), (860, 20), bend=(-30, -40))])
 
 
+def chang_top(m=ID):
+    """⺌ + 冖（常、党 的头）"""
+    return [S_(m, 500, 880, 650, end="hid"), D_(m, (250, 880), (320, 780)), P_(m, (790, 880), (660, 760), w0=V(0.85)),
+            D_(m, (110, 760), (130, 620), w=V(1.0)), han.hook_down(m.x(130), m.x(890), m.y(650), entry=None)]
+
+
 def c_chang_often():           # 常
-    return _w(0.88, lambda: [
-        shu(500, 880, 650, end="hid"), dian((250, 880), (320, 780)), pie((790, 880), (660, 760), w0=V(0.85)),
-        dian((110, 760), (130, 620), w=V(1.0)), han.hook_down(130, 890, 650, entry=None)]
+    return _w(0.88, lambda: chang_top()
         + _kou(300, 700, 526, 390, foot=30)
         + [shu(200, 260, -40), hengzhegou(200, 840, 260, -30), shu(500, 390, -70, top="hid", end="needle")])
 
@@ -588,16 +641,28 @@ def c_zhen():                  # 真
             dian((570, 150), (840, -30), w=V(1.15))])
 
 
+def yi_just(m=ID, na_end=(840, 0)):
+    """义：放进右框时（议）na_end 往里收。"""
+    return [D_(m, (360, 860), (540, 640), w=V(1.15)), P_(m, (810, 800), (50, -50), bend=(-60, -60), w0=V(1.05)),
+            na(m.p((240, 740)), m.p(na_end), m.v((30, -40)), start="tip", wmax=V(1.2) * (0.8 + 0.2 * m.k))]
+
+
 def c_yi_just():               # 义
-    return [dian((360, 860), (540, 640), w=V(1.15)), pie((810, 800), (50, -50), bend=(-60, -60), w0=V(1.05)),
-            na((240, 740), (840, 0), bend=(30, -40), start="tip", wmax=V(1.2))]
+    return yi_just()
+
+
+def ge_each(m=ID, na_end=(860, 400)):
+    """各（路 的右边，也可整字用）：夂 + 口。放进窄的右框时 na_end 往里收。"""
+    P0, P1, B = m.p((380, 870)), m.p((90, 440)), m.v((-10, -10))
+    k = 0.8 + 0.2 * m.k
+    return [pie(P0, P1, B, w0=V(1.0) * k),
+            hengpie(han.on_pie(P0, P1, B, m.y(700))[0], m.x(760), m.y(700), m.p((60, 250)), m.v((60, -40)),
+                    w0=V(0.95) * k, entry=None),
+            na(m.p((330, 690)), m.p(na_end), m.v((20, -40)), wmax=V(1.18) * k)] + KOU_(m, 290, 750, 260, -10)
 
 
 def c_ge_each():               # 各
-    p0, p1, bend = (380, 870), (90, 440), (-10, -10)
-    return _w(0.92, lambda: [pie(p0, p1, bend=bend, w0=V(1.0)),
-            hengpie(han.on_pie(p0, p1, bend, 700)[0], 760, 700, (60, 250), bend=(60, -40), w0=V(0.95), entry=None),
-            na((330, 690), (860, 400), bend=(20, -40))] + _kou(290, 750, 260, -10))
+    return _w(0.92, ge_each)
 
 
 def c_tiao():                  # 条
@@ -646,10 +711,16 @@ def c_shi_lose():              # 失
             na((540, 380), (840, 0), bend=(20, -20))]
 
 
-def c_gao_tell():              # 告
+def gao_tell(m=ID):
+    """告"""
     p0, p1 = (340, 840), (110, 480)
-    return _w(0.9, lambda: [pie(p0, p1, w0=V(0.95)), heng(han.on_pie(p0, p1, (0, 0), 650)[0], 840, 650, entry=None),
-            shu(520, 880, 430, end="hid"), heng(56, 944, 430)] + _kou(275, 755, 280, 20))
+    return [P_(m, p0, p1, w0=V(0.95)),
+            heng(han.on_pie(m.p(p0), m.p(p1), (0, 0), m.y(650))[0], m.x(840), m.y(650), entry=None),
+            S_(m, 520, 880, 430, end="hid"), H_(m, 56, 944, 430)] + KOU_(m, 275, 755, 280, 20)
+
+
+def c_gao_tell():              # 告
+    return _w(0.9, gao_tell)
 
 
 def c_he_what():               # 何
